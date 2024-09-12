@@ -1,70 +1,72 @@
+import { useEffect, useState } from "react";
+
 import apiClient from "@/api/api-client";
 import { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
 import { PLayer } from "@/api/requests/hero-realms/player/player.interface";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useEffect, useMemo, useState } from "react";
+import { useBattlefield } from "@/hooks/use-battlefield";
 
-export type PlayerInfo = {
-  name: string;
-  battlefieldId: number;
-  battlefieldName: string;
-};
+import type { PlayerInfo } from "./settings.interface";
 
 const Settings = () => {
-  const [state, setState] = useState({ name: "", battlefieldName: "" });
+  const { battlefield, setBattlefield } = useBattlefield();
+
   const [battlefields, setBattlefields] = useState<Battlefield[]>([]);
   const [players, setPlayers] = useState<PLayer[]>([]);
-
-  const playerInfo = useMemo(() => {
-    const playerInfo = localStorage.getItem("player-info");
-
-    if (playerInfo) {
-      const { name, battlefieldName } = JSON.parse(playerInfo) as PlayerInfo;
-      setState({ battlefieldName, name });
-    }
-
-    return playerInfo;
-  }, []);
+  const [formState, setFormState] = useState({ btflName: "", name: "" });
 
   useEffect(() => {
     const fetch = async () => {
-      const { data: players } = await apiClient.player.getPlayers();
-      const { data: battlefields } =
-        await apiClient.battlefield.getBattlefields();
-      setBattlefields(battlefields);
-      setPlayers(players);
+      const players = await apiClient.player.getPlayers();
+      const battlefields = await apiClient.battlefield.getBattlefields();
+      setBattlefields(battlefields.data);
+      setPlayers(players.data);
+
+      const name = players.data.find(
+        (player) => player.id === battlefield?.currentPlayerId
+      )?.name;
+      setFormState({ btflName: battlefield?.name ?? "", name: name ?? "" });
     };
 
     fetch();
-  }, []);
+  }, [battlefield?.currentPlayerId, battlefield?.name]);
 
   const handleSubmit = async () => {
-    let battlefieldId = battlefields.find(
-      (b) => b.name === state.battlefieldName
-    )?.id;
-    const playerIsExist = players.some((player) => player.name === state.name);
+    let battlefield = battlefields.find((b) => b.name === formState.btflName);
+    let player = players.find((player) => player.name === formState.name);
 
-    if (!battlefieldId) {
+    if (!battlefield) {
       const { data } = await apiClient.battlefield.createBattlefield({
-        name: state.battlefieldName,
+        name: formState.btflName,
       });
-      battlefieldId = data.id;
+      battlefield = data;
     }
-    console.log({ battlefieldId });
-    const stringified = JSON.stringify({
-      name: state.name,
-      battlefieldId: battlefieldId,
-      battlefieldName: state.battlefieldName,
-    });
-    localStorage.setItem("player-info", stringified);
+    if (!player) {
+      const { data } = await apiClient.player.createPlayer({
+        battlefieldId: battlefield.id,
+        name: formState.name,
+      });
+      player = data;
+    }
 
-    if (!playerIsExist) {
-      await apiClient.player.createPlayer({
-        battlefieldId: battlefields[0]?.id ?? battlefieldId,
-        name: state.name,
-      });
-    }
+    const playerInfo: PlayerInfo = {
+      playerId: player.id,
+      battlefieldId: battlefield.id,
+    };
+    localStorage.setItem("player-info", JSON.stringify(playerInfo));
+
+    const battlefieldPlayers = battlefield.players ?? [];
+    const isPlayerExistInBatfld = battlefieldPlayers.some(
+      (player) => player.id === player.id
+    );
+    setBattlefield({
+      ...battlefield,
+      ...(!isPlayerExistInBatfld && {
+        players: [...battlefieldPlayers, player],
+      }),
+      currentPlayerId: player.id,
+    });
   };
 
   return (
@@ -74,9 +76,11 @@ const Settings = () => {
         <Input
           id="name"
           className="bg-zinc-900 w-80"
-          value={state.name}
-          disabled={!!playerInfo}
-          onChange={({ target }) => setState({ ...state, name: target.value })}
+          value={formState.name}
+          disabled={!!battlefield?.currentPlayerId}
+          onChange={({ target }) =>
+            setFormState({ ...formState, name: target.value })
+          }
         />
       </div>
 
@@ -85,10 +89,10 @@ const Settings = () => {
         <Input
           id="name"
           className="bg-zinc-900 w-80"
-          value={state.battlefieldName}
-          disabled={!!playerInfo}
+          value={formState.btflName}
+          disabled={!!battlefield?.id}
           onChange={({ target }) =>
-            setState({ ...state, battlefieldName: target.value })
+            setFormState({ ...formState, btflName: target.value })
           }
         />
       </div>
@@ -97,7 +101,7 @@ const Settings = () => {
         <Button
           className="w-24 bg-zinc-900"
           onClick={handleSubmit}
-          // disabled={!!playerInfo}
+          disabled={!!(battlefield?.currentPlayerId && battlefield?.id)}
         >
           Сохранить
         </Button>

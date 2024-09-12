@@ -16,17 +16,17 @@ class BattlefieldService {
     );
   }
 
-  public getBattlefields(config?: AxiosRequestConfig) {
-    return api.get<Battlefield[]>(URLS.BATTLEFIELD.GET_BATTLEFIELDS, config);
-  }
-
-  public prepareBattlefield(id: number, config?: AxiosRequestConfig) {
-    const normalizedUri = URLS.BATTLEFIELD.PREPARE_BATTLEFIELD.replace(
+  public getBattlefield(id: number, config?: AxiosRequestConfig) {
+    const normalizedUri = URLS.BATTLEFIELD.GET_BATTLEFIELD.replace(
       "$1",
       id.toString()
     );
 
     return api.get<Battlefield>(normalizedUri, config);
+  }
+
+  public getBattlefields(config?: AxiosRequestConfig) {
+    return api.get<Battlefield[]>(URLS.BATTLEFIELD.GET_BATTLEFIELDS, config);
   }
 }
 

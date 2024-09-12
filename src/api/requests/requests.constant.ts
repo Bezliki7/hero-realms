@@ -8,8 +8,8 @@ export const URLS = {
   },
   BATTLEFIELD: {
     CREATE_BATTLEFIELD: "/battlefield",
+    GET_BATTLEFIELD: "/battlefield/$1",
     GET_BATTLEFIELDS: "battlefield/all-battlefields",
-    PREPARE_BATTLEFIELD: "battlefield/prepare-battlefield/$1",
   },
 } as const;
 

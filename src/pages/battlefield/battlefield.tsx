@@ -1,36 +1,38 @@
 import { useEffect, useState } from "react";
-import { PlayerInfo } from "../settings/settings";
-import { Battlefield as BattlefieldType } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
+
+import { useBattlefield } from "@/hooks/use-battlefield";
+
 import TradingRow from "./components/trading-row/trading-row";
 import battlefieldService from "./services/battlefield.service";
 
 const Battlefield = () => {
-  const [state, setState] = useState<BattlefieldType>();
+  const { battlefield, setBattlefield } = useBattlefield();
+  const [isInit, setInit] = useState(false);
 
   useEffect(() => {
-    const playerInfo = localStorage.getItem("player-info");
-
-    if (playerInfo) {
-      const { battlefieldId } = JSON.parse(playerInfo) as PlayerInfo;
-
-      battlefieldService.connect();
-      battlefieldService.prepareBattlefield(battlefieldId);
-      battlefieldService.onBattlefielIsReady((b) => setState(b));
+    if (battlefield?.id && !isInit) {
+      battlefieldService.init(battlefield.id);
+      battlefieldService.onBattlefielIsReady((b) => setBattlefield(b));
+      if (battlefield.heroes?.length) {
+        setInit(true);
+      }
     }
 
     return () => {
       battlefieldService.disconnect();
     };
-  }, []);
+  }, [battlefield, isInit, setBattlefield]);
 
   return (
     <>
-      {state?.players.map((player) => (
-        <div>
+      {battlefield?.players?.map((player) => (
+        <div key={player.id}>
+          {battlefield.currentPlayerId === player.id && <>это ты - </>}
           {player.name} - {player.health}hp
         </div>
       ))}
-      <TradingRow heroes={state?.heroes ?? []} />
+
+      <TradingRow heroes={battlefield?.heroes ?? []} />
     </>
   );
 };
