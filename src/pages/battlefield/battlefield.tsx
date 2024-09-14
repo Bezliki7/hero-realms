@@ -4,6 +4,8 @@ import { useBattlefield } from "@/hooks/use-battlefield";
 
 import TradingRow from "./components/trading-row/trading-row";
 import battlefieldService from "./services/battlefield.service";
+import InvertedCard from "./components/inverted-card/inverted-card";
+import PlayerDecks from "./components/player-decks/player-decks";
 
 const Battlefield = () => {
   const { battlefield, setBattlefield } = useBattlefield();
@@ -23,16 +25,25 @@ const Battlefield = () => {
     };
   }, [battlefield, isInit, setBattlefield]);
 
+  const player = battlefield?.players?.find(
+    (player) => player.id === battlefield.currentPlayerId
+  );
+
   return (
     <>
       {battlefield?.players?.map((player) => (
         <div key={player.id}>
-          {battlefield.currentPlayerId === player.id && <>это ты - </>}
-          {player.name} - {player.health}hp
+          {player.name}
+          {player.currentTurnPlayer && " сейчас ходит"} - {player.health}hp
         </div>
       ))}
+      <div className="flex items-center">
+        <TradingRow heroes={battlefield?.heroes ?? []} />
+        <InvertedCard />
+        <InvertedCard />
+      </div>
 
-      <TradingRow heroes={battlefield?.heroes ?? []} />
+      <PlayerDecks player={player} />
     </>
   );
 };

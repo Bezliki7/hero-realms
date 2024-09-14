@@ -1,3 +1,5 @@
+import type { Hero } from "../hero/hero.interface";
+
 export type CreatePlayerDto = {
   name: string;
   battlefieldId: number;
@@ -18,4 +20,6 @@ export type PLayer = {
   battlefieldId: number;
   name: string;
   health: number;
+  currentTurnPlayer: boolean;
+  heroes: Hero[];
 };

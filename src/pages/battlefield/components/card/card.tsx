@@ -6,17 +6,25 @@ const Card = ({ hero }: CardProps) => {
   return (
     <section className={styles.container}>
       <div className={styles.header}>
-        <svg width="30" height="30" className="rounded-full">
-          <image
-            href={`src/assets/images/fractions/${hero.fraction}.png`}
-            height="100%"
-            width="100%"
-          />
-        </svg>
+        {hero.fraction ? (
+          <svg width="30" height="30" className="rounded-full">
+            <image
+              href={`src/assets/images/fractions/${hero.fraction}.png`}
+              height="100%"
+              width="100%"
+            />
+          </svg>
+        ) : (
+          <div />
+        )}
 
         {hero.name}
 
-        <div className={styles.round}>{hero.price}</div>
+        {hero.price ? (
+          <div className={styles.round}>{hero.price}</div>
+        ) : (
+          <div />
+        )}
       </div>
 
       <svg width="350" height="200" className="pt-1">

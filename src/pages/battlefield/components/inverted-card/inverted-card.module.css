@@ -1,0 +1,12 @@
+.invertedCard {
+  background: rgb(18, 18, 19);
+  background: linear-gradient(
+    341deg,
+    rgba(18, 18, 19, 1) 73%,
+    rgba(0, 0, 0, 0.9837184873949579) 100%
+  );
+  width: 162px;
+  height: 228px;
+  border-radius: 0.75rem;
+  margin-right: 9px;
+}
