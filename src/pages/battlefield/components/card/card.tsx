@@ -2,9 +2,9 @@ import Actions from "./actions/actions";
 import { CardProps } from "./card.interface";
 import styles from "./card.module.css";
 
-const Card = ({ hero }: CardProps) => {
+const Card = ({ hero, onClick }: CardProps) => {
   return (
-    <section className={styles.container}>
+    <section className={styles.container} onClick={onClick}>
       <div className={styles.header}>
         {hero.fraction ? (
           <svg width="30" height="30" className="rounded-full">

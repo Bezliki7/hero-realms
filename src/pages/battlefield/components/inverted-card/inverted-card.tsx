@@ -1,7 +1,11 @@
 import styles from "./inverted-card.module.css";
 
-const InvertedCard = () => {
-  return <div className={styles.invertedCard} />;
+type InvertedCardProps = {
+  children?: React.ReactNode;
+};
+
+const InvertedCard = ({ children }: InvertedCardProps) => {
+  return <div className={styles.invertedCard}>{children}</div>;
 };
 
 export default InvertedCard;

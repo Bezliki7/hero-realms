@@ -22,4 +22,5 @@ export const HERO_PLACEMENT = {
   SACRIFICIAL_DECK: "sacrificial-deck",
   TRADING_DECK: "trading-deck",
   TRADING_ROW: "trading-row",
+  DEFENDERS_ROW: "defenders-row",
 } as const;

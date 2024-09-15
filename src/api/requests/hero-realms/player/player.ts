@@ -16,6 +16,15 @@ class PlayerService {
   public updatePlayer(dto: UpdatePlayerDto, config?: AxiosRequestConfig) {
     return api.put<PLayer>(URLS.PLAYER.CREATE_PLAYER, dto, config);
   }
+
+  public endPlayerMove(playerId: number, config?: AxiosRequestConfig) {
+    const normalizedUri = URLS.PLAYER.END_PLAYER_MOVE.replace(
+      "$1",
+      playerId.toString(10)
+    );
+
+    return api.put<PLayer>(normalizedUri, playerId, config);
+  }
 }
 
 export default PlayerService;

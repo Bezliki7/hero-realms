@@ -25,12 +25,14 @@ export type HeroPlacement =
   | "reset-deck"
   | "sacrificial-deck"
   | "trading-deck"
-  | "trading-row";
+  | "trading-row"
+  | "defenders-row";
 
 export type Action = {
   id: number;
   conditions: ActionCondition[];
   isOptional: boolean;
+  isUsed: boolean;
   damage: number;
   heal: number;
   gold: number;
@@ -43,3 +45,21 @@ export type Action = {
   putToDeckResetedDefender: number;
   putPurchasedCardIntoDec: number;
 };
+
+export type HireHeroDto = {
+  heroId: number;
+  playerId: number;
+  putToSelectionDeck?: boolean;
+};
+
+export type UseHeroActionsDto = {
+  heroId: number;
+  playerId: number;
+  choiceAction?: keyof ActionWithoutAdditionalInfo;
+  heroIdForAction?: number;
+};
+
+export type ActionWithoutAdditionalInfo = Omit<
+  Action,
+  "id" | "playerId" | "heroId" | "conditions" | "isOptional"
+>;

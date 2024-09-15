@@ -1,0 +1,8 @@
+.label {
+  padding: 15px 5px;
+  font-size: 13px;
+  text-wrap: nowrap;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}

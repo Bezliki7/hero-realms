@@ -5,14 +5,19 @@ import Card from "../../../card/card";
 
 type ActiveDeckProps = {
   heroes: Hero[];
+  onClickCard: (id: number) => void;
 };
 
-const ActiveDeck = ({ heroes }: ActiveDeckProps) => {
+const ActiveDeck = ({ heroes, onClickCard }: ActiveDeckProps) => {
   return (
     <div className={styles.container}>
       {heroes.map((hero) => {
         return (
-          <div key={hero.id} className={styles.card}>
+          <div
+            key={hero.id}
+            className={styles.card}
+            onClick={() => onClickCard(hero.id)}
+          >
             <Card hero={hero} />
           </div>
         );

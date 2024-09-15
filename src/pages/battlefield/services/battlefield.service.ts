@@ -18,6 +18,7 @@ class BattlefieldWsService {
 
   public disconnect() {
     this.socket.disconnect();
+    this.socket.offAny();
   }
 
   public init(id: number) {
@@ -31,8 +32,10 @@ class BattlefieldWsService {
     });
   }
 
-  public onBattlefielIsReady(callback: (battlefield: Battlefield) => void) {
-    this.socket.on(CLIENT_MESSAGES.BATTLEFIELD_IS_READY, callback);
+  public subscribeToUpdatedBattlefield(
+    callback: (battlefield: Battlefield) => void
+  ) {
+    this.socket.on(CLIENT_MESSAGES.BATTLEFIELD_UPDATED, callback);
   }
 }
 

@@ -7,24 +7,35 @@ import {
   CONDITIONS_WITH_FOR_EVERY,
 } from "@/api/requests/hero-realms/hero/hero.constant";
 
-const Actions = ({ actions }: { actions: ActionType[] }) => {
-  const hha = ["id", "heroId", "conditions", "conditions", "isOptional"];
+const ADDITIONAL_ACTION_INFO = [
+  "id",
+  "heroId",
+  "conditions",
+  "conditions",
+  "isOptional",
+  "isUsed",
+];
 
+const Actions = ({ actions }: { actions: ActionType[] }) => {
   const getProperties = (action: ActionType) => {
     const isIncludeForEvery = action.conditions.some((condition) =>
       CONDITIONS_WITH_FOR_EVERY.includes(condition)
     );
 
     return Object.entries(action).map(([actionName, conut]) => {
-      if (!hha.includes(actionName) && conut) {
+      if (!ADDITIONAL_ACTION_INFO.includes(actionName) && conut) {
         const key = `${action.id}:${actionName}`;
 
-        const forEveryCond = action.conditions.find((c) =>
-          c.includes("for-every")
+        const conditionForEvery = action.conditions.find((condition) =>
+          condition.includes("for-every")
         );
+
         return (
-          <div key={key}>
-            {isIncludeForEvery && forEveryCond} {actionName}
+          <div
+            key={key}
+            style={{ textDecoration: action.isUsed ? "line-through" : "" }}
+          >
+            {isIncludeForEvery && conditionForEvery} {actionName}
             {action.isOptional && "?"}: {conut}
           </div>
         );
