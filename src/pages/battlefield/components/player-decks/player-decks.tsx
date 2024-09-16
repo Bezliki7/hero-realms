@@ -6,7 +6,6 @@ import ActiveDeck from "./components/active-deck/active-deck";
 import SelectionDeck from "./components/selection-deck/selection-deck";
 import ResetDeck from "./components/reset-deck/selection-deck";
 import apiClient from "@/api/api-client";
-import Card from "../card/card";
 
 type PlayerDecksProps = {
   player?: PLayer;
@@ -46,13 +45,6 @@ const PlayerDecks = ({ player }: PlayerDecksProps) => {
         <SelectionDeck selectionDeckCount={selectionDeckCount} />
         <ResetDeck resetDeckCount={resetDeckCount} />
       </div>
-
-      {player.heroes.map(
-        (hero) =>
-          hero.placement === HERO_PLACEMENT.DEFENDERS_ROW && (
-            <Card key={hero.id} hero={hero} />
-          )
-      )}
     </div>
   );
 };

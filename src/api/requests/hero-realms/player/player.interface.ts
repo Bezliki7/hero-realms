@@ -22,5 +22,6 @@ export type PLayer = {
   health: number;
   currentTurnPlayer: boolean;
   currentGoldCount: number;
+  currentDamageCount: number;
   heroes: Hero[];
 };

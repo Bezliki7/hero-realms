@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(17, 17, 17, 0.5);
+
+  /* .card {
+    transform: scale(0.6);
+    transform-origin: top left;
+    padding-right: 170px;
+    padding-bottom: 230px;
+  } */
+}
+
+.card {
+  height: min-content;
+
+  section {
+    height: 380px;
+    position: absolute;
+  }
+}
