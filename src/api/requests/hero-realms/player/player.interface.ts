@@ -25,3 +25,9 @@ export type PLayer = {
   currentDamageCount: number;
   heroes: Hero[];
 };
+
+export type AttackPlayerDto = {
+  attackingPlayerId: number;
+  defendingPlayerId: number;
+  heroIdToAttack?: number;
+};

@@ -21,6 +21,15 @@ const Battlefield = () => {
     }
   };
 
+  const handleAttackOpponent = async () => {
+    if (currentPlayer?.currentDamageCount && opponentPlayer) {
+      await apiClient.player.attackPlayer({
+        attackingPlayerId: currentPlayer?.id,
+        defendingPlayerId: opponentPlayer?.id,
+      });
+    }
+  };
+
   useEffect(() => {
     if (battlefield?.id && !isInit) {
       battlefieldService.connect();
@@ -59,9 +68,13 @@ const Battlefield = () => {
         </div>
       ))}
 
-      <Button onClick={() => setDefendersModalOpen(true)}>
-        Посмотреть на защитников
-      </Button>
+      <div className="flex p-2 gap-8">
+        <Button onClick={() => setDefendersModalOpen(true)}>
+          Посмотреть на защитников
+        </Button>
+
+        <Button onClick={handleAttackOpponent}>Атаковать противника</Button>
+      </div>
 
       <div className="flex items-center">
         <TradingRow heroes={battlefield?.heroes ?? []} player={currentPlayer} />

@@ -1,5 +1,5 @@
 import { Action as ActionType } from "@/api/requests/hero-realms/hero/hero.interface";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import styles from "./action.module.css";
 import {
@@ -86,7 +86,12 @@ const Actions = ({ actions }: { actions: ActionType[] }) => {
     }
   }, []);
 
-  return actions.map((action, index) => {
+  const sortedActions = useMemo(
+    () => actions.sort((a, b) => a.conditions.length - b.conditions.length),
+    [actions]
+  );
+
+  return sortedActions.map((action, index) => {
     if (!index && action.conditions.includes(ACTION_CONDITION.CHOICE)) {
       return (
         <div style={{ width: "80%" }}>

@@ -5,13 +5,18 @@
   width: 100vw;
   height: 100vh;
   background-color: rgba(17, 17, 17, 0.5);
+}
 
-  /* .card {
-    transform: scale(0.6);
-    transform-origin: top left;
-    padding-right: 170px;
-    padding-bottom: 230px;
-  } */
+.cards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.8);
+  column-gap: 15px;
+
+  section {
+    height: 380px;
+  }
 }
 
 .card {
@@ -19,6 +24,15 @@
 
   section {
     height: 380px;
-    position: absolute;
+    /* position: absolute; */
   }
+}
+
+.modalContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: column;
 }

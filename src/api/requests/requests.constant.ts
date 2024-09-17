@@ -8,6 +8,7 @@ export const URLS = {
     CREATE_PLAYER: "/player",
     GET_PLAYERS: "/player/all-players",
     END_PLAYER_MOVE: "/player/end-move/$1",
+    ATTACK_PLAYER: "/player/attack-player",
   },
   BATTLEFIELD: {
     CREATE_BATTLEFIELD: "/battlefield",
