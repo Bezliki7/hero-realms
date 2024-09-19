@@ -1,0 +1,19 @@
+.label {
+  padding: 15px 5px;
+  font-size: 13px;
+  text-wrap: nowrap;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.cards {
+  display: flex;
+  transform: scale(0.8);
+  transform-origin: left top;
+  column-gap: 15px;
+
+  section {
+    height: 380px;
+  }
+}

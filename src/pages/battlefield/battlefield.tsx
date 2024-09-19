@@ -21,10 +21,13 @@ const Battlefield = () => {
 
   const handleAttackOpponent = async () => {
     if (player.currentDamageCount && opponentPlayer) {
-      await apiClient.player.attackPlayer({
+      const res = await apiClient.player.attackPlayer({
         attackingPlayerId: player?.id,
         defendingPlayerId: opponentPlayer?.id,
       });
+      if (res.data) {
+        alert(res.data);
+      }
     }
   };
 
