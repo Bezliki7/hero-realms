@@ -1,76 +1,50 @@
 import { useEffect, useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 
-import {
-  BatllefieldContext,
-  BtlfdWithCurrPlayerId,
-} from "./contexts/battlefield";
-import AllHeroes from "./pages/all-heroes/all-heroes";
-import Battlefield from "./pages/battlefield/battlefield";
-import Settings from "./pages/settings/settings";
-import StartScreen from "./pages/start-screen/start-screen";
 import apiClient from "./api/api-client";
+import { router } from "./pages";
+import Settings from "./pages/settings/settings";
+import Providers from "./contexts";
+import { PLAYER_INFO_KEY } from "./pages/settings/settings.constant";
 
 import type { PlayerInfo } from "./pages/settings/settings.interface";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <StartScreen />,
-  },
-  {
-    path: "/all-heroes",
-    element: <AllHeroes />,
-  },
-  {
-    path: "/settings",
-    element: <Settings />,
-  },
-  {
-    path: "/battlefield",
-    element: <Battlefield />,
-  },
-]);
+import type { Battlefield } from "./api/requests/hero-realms/battlefield/battlefield.interface";
+import type { Player } from "./api/requests/hero-realms/player/player.interface";
 
 const App = () => {
-  const [battlefield, setBattlefield] = useState<BtlfdWithCurrPlayerId>();
+  const [battlefield, setBattlefield] = useState<Battlefield>();
+  const [player, setPlayer] = useState<Player>();
 
   useEffect(() => {
     const fetch = async () => {
-      const playerInfo = localStorage.getItem("player-info");
+      const playerInfo = localStorage.getItem(PLAYER_INFO_KEY);
 
       if (playerInfo) {
         const { battlefieldId, playerId } = JSON.parse(
           playerInfo
         ) as PlayerInfo;
 
-        const { data } = await apiClient.battlefield.getBattlefield(
+        const battlefield = await apiClient.battlefield.getBattlefield(
           battlefieldId
         );
+        const player = await apiClient.player.getPlayer(playerId);
 
-        setBattlefield({
-          ...data,
-          currentPlayerId: playerId,
-        });
+        setBattlefield(battlefield.data);
+        setPlayer(player.data);
       }
     };
 
     fetch();
   }, []);
 
-  const handleChangeBattlefiel = (payload: BtlfdWithCurrPlayerId) => {
-    setBattlefield({ ...battlefield, ...payload });
-  };
+  if (!battlefield || !player) {
+    return <Settings />;
+  }
 
   return (
-    <BatllefieldContext.Provider
-      value={{
-        battlefield,
-        setBattlefield: handleChangeBattlefiel,
-      }}
-    >
+    <Providers battlefield={battlefield} player={player}>
       <RouterProvider router={router} />
-    </BatllefieldContext.Provider>
+    </Providers>
   );
 };
 

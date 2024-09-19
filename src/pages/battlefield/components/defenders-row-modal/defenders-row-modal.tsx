@@ -1,13 +1,13 @@
 import styles from "./defenders-row-modal.module.css";
 import Card from "../card/card";
 import { Popover } from "@/components/ui/popover";
-import { PLayer } from "@/api/requests/hero-realms/player/player.interface";
+import { Player } from "@/api/requests/hero-realms/player/player.interface";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import apiClient from "@/api/api-client";
 
 type DefendersRow = {
-  currentPlayer?: PLayer;
-  opponentPlayer?: PLayer;
+  currentPlayer: Player;
+  opponentPlayer: Player;
   onClose: VoidFunction;
 };
 
@@ -18,12 +18,11 @@ const DefendersRow = ({
 }: DefendersRow) => {
   const handleClickCard = async (event: React.MouseEvent, id: number) => {
     event.stopPropagation();
-    if (currentPlayer) {
-      await apiClient.hero.useHeroActions({
-        heroId: id,
-        playerId: currentPlayer.id,
-      });
-    }
+
+    await apiClient.hero.useHeroActions({
+      heroId: id,
+      playerId: currentPlayer.id,
+    });
   };
 
   const handleAttackOpponentsCard = async (
@@ -32,7 +31,7 @@ const DefendersRow = ({
   ) => {
     event.stopPropagation();
 
-    if (currentPlayer?.currentDamageCount && opponentPlayer) {
+    if (currentPlayer.currentDamageCount) {
       await apiClient.player.attackPlayer({
         attackingPlayerId: currentPlayer.id,
         defendingPlayerId: opponentPlayer.id,
@@ -41,11 +40,11 @@ const DefendersRow = ({
     }
   };
 
-  const currentPlayerDefenders = currentPlayer?.heroes.filter(
+  const currentPlayerDefenders = currentPlayer.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW
   );
 
-  const opponentPlayerPlayerDefenders = opponentPlayer?.heroes.filter(
+  const opponentPlayerPlayerDefenders = opponentPlayer.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW
   );
 
@@ -53,7 +52,7 @@ const DefendersRow = ({
     <div className={styles.container} onClick={onClose}>
       <Popover modal={true}>
         <div className={styles.modalContainer}>
-          {opponentPlayerPlayerDefenders?.length ? (
+          {opponentPlayerPlayerDefenders.length ? (
             <div className={styles.cards}>
               {opponentPlayerPlayerDefenders.map((defender) => (
                 <Card
@@ -66,7 +65,7 @@ const DefendersRow = ({
             <div style={{ height: 370 }} />
           )}
 
-          {currentPlayerDefenders?.length ? (
+          {currentPlayerDefenders.length ? (
             <div className={styles.cards}>
               {currentPlayerDefenders.map((defender) => (
                 <Card

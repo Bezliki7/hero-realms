@@ -1,6 +1,6 @@
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
-import { PLayer } from "@/api/requests/hero-realms/player/player.interface";
+import { Player } from "@/api/requests/hero-realms/player/player.interface";
 
 import ActiveDeck from "./components/active-deck/active-deck";
 import SelectionDeck from "./components/selection-deck/selection-deck";
@@ -8,14 +8,10 @@ import ResetDeck from "./components/reset-deck/selection-deck";
 import apiClient from "@/api/api-client";
 
 type PlayerDecksProps = {
-  player?: PLayer;
+  player: Player;
 };
 
 const PlayerDecks = ({ player }: PlayerDecksProps) => {
-  if (!player) {
-    return null;
-  }
-
   const handleClickCard = async (id: number) => {
     if (player.currentTurnPlayer) {
       await apiClient.hero.useHeroActions({
@@ -26,15 +22,15 @@ const PlayerDecks = ({ player }: PlayerDecksProps) => {
   };
 
   const activeDeckHeroes =
-    player.heroes?.filter(
+    player.heroes.filter(
       (hero) => hero.placement === HERO_PLACEMENT.ACTIVE_DECK
     ) ?? [];
 
-  const selectionDeckCount = player.heroes?.filter(
+  const selectionDeckCount = player.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.SELECTION_DECK
   ).length;
 
-  const resetDeckCount = player.heroes?.filter(
+  const resetDeckCount = player.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.RESET_DECK
   ).length;
 

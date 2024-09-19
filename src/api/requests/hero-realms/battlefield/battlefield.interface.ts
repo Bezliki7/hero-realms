@@ -1,5 +1,6 @@
 import { Hero } from "../hero/hero.interface";
-import { PLayer } from "../player/player.interface";
+
+import { Player } from "../player/player.interface";
 
 export type CreateBattlefieldDto = {
   name: string;
@@ -10,5 +11,5 @@ export type Battlefield = {
   name: string;
   round: number;
   heroes: Hero[];
-  players: PLayer[];
+  players: Player[];
 };

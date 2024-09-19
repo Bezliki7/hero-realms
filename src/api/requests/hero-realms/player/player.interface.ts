@@ -15,7 +15,7 @@ export type UpdatePlayerDto = {
   currentTurnPlayer?: boolean;
 };
 
-export type PLayer = {
+export type Player = {
   id: number;
   battlefieldId: number;
   name: string;

@@ -6,6 +6,7 @@ export const URLS = {
   },
   PLAYER: {
     CREATE_PLAYER: "/player",
+    GET_PLAYER: "/player/$1",
     GET_PLAYERS: "/player/all-players",
     END_PLAYER_MOVE: "/player/end-move/$1",
     ATTACK_PLAYER: "/player/attack-player",
