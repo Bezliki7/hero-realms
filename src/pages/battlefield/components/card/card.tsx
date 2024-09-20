@@ -1,49 +1,41 @@
-import Actions from "./actions/actions";
-import { CardProps } from "./card.interface";
+import { useMemo } from "react";
+
+import Action from "./action/action";
+import Header from "./header/header";
+import { PROTECTION_BG_COLOR } from "./card.constant";
 import styles from "./card.module.css";
 
+import type { CardProps } from "./card.interface";
+
 const Card = ({ hero, onClick }: CardProps) => {
+  const sortedActions = useMemo(
+    () =>
+      hero.actions.sort((a, b) => a.conditions.length - b.conditions.length),
+    [hero.actions]
+  );
+
   return (
     <section className={styles.container} onClick={onClick}>
-      <div className={styles.header}>
-        {hero.fraction ? (
-          <svg width="30" height="30" className="rounded-full">
-            <image
-              href={`src/assets/images/fractions/${hero.fraction}.png`}
-              height="100%"
-              width="100%"
-            />
-          </svg>
-        ) : (
-          <div />
-        )}
+      <Header name={hero.name} price={hero.price} fraction={hero.fraction} />
 
-        {hero.name}
-
-        {hero.price ? (
-          <div className={styles.round}>{hero.price}</div>
-        ) : (
-          <div />
-        )}
-      </div>
-
-      <svg width="350" height="200" className="pt-1">
+      <svg className={styles.image}>
         <image
           href={`src/assets/images/heroes/${hero.image}`}
-          height="100%"
-          width="100%"
+          className="w-full h-full"
         />
       </svg>
 
-      <Actions actions={hero.actions} />
+      {sortedActions.map((action, index) => (
+        <Action key={action.id} action={action} index={index} />
+      ))}
 
       {hero.protection && (
         <footer
           className={styles.footer}
           style={{
             backgroundColor: hero.isGuardian
-              ? "rgb(75, 75, 75)"
-              : "rgb(175, 175, 175)",
+              ? PROTECTION_BG_COLOR.GRAY
+              : PROTECTION_BG_COLOR.WHITE,
           }}
         >
           {hero.protection}

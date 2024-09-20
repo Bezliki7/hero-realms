@@ -37,6 +37,12 @@
   font-weight: bold;
 }
 
+.image {
+  width: 350px;
+  height: 200px;
+  padding: 2px 0px;
+}
+
 .footer {
   display: flex;
   align-items: center;
