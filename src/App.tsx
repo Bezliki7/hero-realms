@@ -6,6 +6,7 @@ import { router } from "./pages";
 import Settings from "./pages/settings/settings";
 import Providers from "./contexts";
 import { PLAYER_INFO_KEY } from "./pages/settings/settings.constant";
+import { Toaster } from "./components/ui/toaster";
 
 import type { PlayerInfo } from "./pages/settings/settings.interface";
 import type { Battlefield } from "./api/requests/hero-realms/battlefield/battlefield.interface";
@@ -44,6 +45,7 @@ const App = () => {
   return (
     <Providers battlefield={battlefield} player={player}>
       <RouterProvider router={router} />
+      <Toaster />
     </Providers>
   );
 };

@@ -8,9 +8,11 @@ import InvertedCard from "./components/inverted-card/inverted-card";
 import PlayerDecks from "./components/player-decks/player-decks";
 import DefendersRow from "./components/defenders-row-modal/defenders-row-modal";
 import { useBattlefieldState } from "./hooks/use-battlefield-state";
+import { useToast } from "@/hooks/use-toast";
 
 const Battlefield = () => {
   const { battlefield, player, opponentPlayer } = useBattlefieldState();
+  const { toast } = useToast();
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
 
   const handleEndMove = async () => {
@@ -26,7 +28,10 @@ const Battlefield = () => {
         defendingPlayerId: opponentPlayer?.id,
       });
       if (res.data) {
-        alert(res.data);
+        toast({
+          title: "Ошибка",
+          description: res.data,
+        });
       }
     }
   };
@@ -54,7 +59,12 @@ const Battlefield = () => {
           Посмотреть на защитников
         </Button>
 
-        <Button onClick={handleAttackOpponent}>Атаковать противника</Button>
+        <Button
+          disabled={!player.currentDamageCount}
+          onClick={handleAttackOpponent}
+        >
+          Атаковать противника
+        </Button>
       </div>
 
       <div className="flex items-center">

@@ -4,6 +4,7 @@ import { Player } from "@/api/requests/hero-realms/player/player.interface";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import apiClient from "@/api/api-client";
 import { Modal } from "@/components/ui/modal";
+import { useToast } from "@/hooks/use-toast";
 
 type DefendersRow = {
   currentPlayer: Player;
@@ -16,13 +17,17 @@ const DefendersRow = ({
   opponentPlayer,
   onClose,
 }: DefendersRow) => {
+  const { toast } = useToast();
+
   const handleClickCard = async (event: React.MouseEvent, id: number) => {
     event.stopPropagation();
 
-    await apiClient.hero.useHeroActions({
-      heroId: id,
-      playerId: currentPlayer.id,
-    });
+    if (currentPlayer.currentTurnPlayer) {
+      await apiClient.hero.useHeroActions({
+        heroId: id,
+        playerId: currentPlayer.id,
+      });
+    }
   };
 
   const handleAttackOpponentsCard = async (
@@ -38,7 +43,10 @@ const DefendersRow = ({
         heroIdToAttack: heroId,
       });
       if (res.data) {
-        alert(res.data);
+        toast({
+          title: "Ошибка",
+          description: res.data,
+        });
       }
     }
   };

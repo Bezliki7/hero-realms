@@ -38,12 +38,7 @@ class PlayerService {
   }
 
   public attackPlayer(dto: AttackPlayerDto, config?: AxiosRequestConfig) {
-    // const normalizedUri = URLS.PLAYER.END_PLAYER_MOVE.replace(
-    //   "$1",
-    //   playerId.toString(10)
-    // );
-
-    return api.put<Player>(URLS.PLAYER.ATTACK_PLAYER, dto, config);
+    return api.put<string | undefined>(URLS.PLAYER.ATTACK_PLAYER, dto, config);
   }
 }
 
