@@ -1,22 +1,29 @@
-import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
+import { useRef, useState } from "react";
 
-import { Player } from "@/api/requests/hero-realms/player/player.interface";
+import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
+import apiClient from "@/api/api-client";
 
 import ActiveDeck from "./components/active-deck/active-deck";
 import SelectionDeck from "./components/selection-deck/selection-deck";
 import ResetDeck from "./components/reset-deck/reset-deck";
-import apiClient from "@/api/api-client";
 
-type PlayerDecksProps = {
-  player: Player;
-};
+import type {
+  HandleClickCardParams,
+  PlayerDecksProps,
+} from "./player-deck.interface";
 
 const PlayerDecks = ({ player }: PlayerDecksProps) => {
-  const handleClickCard = async (id: number) => {
+  const clickedHeroId = useRef(0);
+  const [isResetDeckModalOpen, setResetDeckModalOpen] = useState(false);
+
+  const handleClickCard = async (params: HandleClickCardParams) => {
+    console.log(params);
     if (player.currentTurnPlayer) {
       await apiClient.hero.useHeroActions({
-        heroId: id,
+        heroId: params.id ?? clickedHeroId.current,
         playerId: player.id,
+        choiceActionId: params.choiceActionId,
+        heroIdForAction: params.heroIdForAction,
       });
     }
   };
@@ -37,9 +44,21 @@ const PlayerDecks = ({ player }: PlayerDecksProps) => {
   return (
     <div>
       <div className="flex items-center">
-        <ActiveDeck heroes={activeDeck} onClickCard={handleClickCard} />
+        <ActiveDeck
+          heroes={activeDeck}
+          clickedHeroId={clickedHeroId}
+          onClickCard={(id) => handleClickCard({ id })}
+          setResetDeckModalOpen={() => setResetDeckModalOpen(true)}
+        />
         <SelectionDeck selectionDeckCount={selectionDeckCount} />
-        <ResetDeck heroes={resetDeck} />
+        <ResetDeck
+          heroes={resetDeck}
+          isResetDeckModalOpen={isResetDeckModalOpen}
+          onClickCard={(heroIdForAction) =>
+            handleClickCard({ heroIdForAction })
+          }
+          onCloseModal={() => setResetDeckModalOpen(false)}
+        />
       </div>
     </div>
   );

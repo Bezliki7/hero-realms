@@ -6,4 +6,13 @@
 .property {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.radioGroupContainer {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  padding-left: 10px;
 }

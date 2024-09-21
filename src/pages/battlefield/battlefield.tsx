@@ -36,6 +36,10 @@ const Battlefield = () => {
     }
   };
 
+  const tradingDeckCount = battlefield.heroes.filter(
+    (hero) => hero.placement === "trading-deck"
+  ).length;
+
   return (
     <>
       {isDefendersModalOpen && (
@@ -69,7 +73,7 @@ const Battlefield = () => {
 
       <div className="flex items-center">
         <TradingRow heroes={battlefield?.heroes ?? []} player={player} />
-        <InvertedCard />
+        <InvertedCard>Рынок: {tradingDeckCount}</InvertedCard>
         <InvertedCard />
       </div>
 

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { Modal } from "@/components/ui/modal";
 import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
@@ -9,24 +7,30 @@ import styles from "./reset-deck.module.css";
 
 type ResetDeckDeckProps = {
   heroes: Hero[];
+  isResetDeckModalOpen: boolean;
+  onClickCard: (heroIdForAction: number) => void;
+  onCloseModal: () => void;
 };
 
-const ResetDeck = ({ heroes }: ResetDeckDeckProps) => {
-  const [isResetDeckModalOpen, setResetDeckModalOpen] = useState(false);
-
+const ResetDeck = ({
+  heroes,
+  isResetDeckModalOpen,
+  onClickCard,
+}: ResetDeckDeckProps) => {
   return (
     <>
-      <InvertedCard onClick={() => setResetDeckModalOpen(true)}>
+      <InvertedCard>
         <div className={styles.label}>
           Карт в колоде сброса: {heroes.length}
         </div>
       </InvertedCard>
 
       {isResetDeckModalOpen && (
-        <Modal onClose={() => setResetDeckModalOpen(false)}>
+        <Modal>
+          Выберите героя для действия
           <div className={styles.cards}>
             {heroes.map((hero) => (
-              <Card hero={hero} />
+              <Card hero={hero} onClick={() => onClickCard(hero.id)} />
             ))}
           </div>
         </Modal>

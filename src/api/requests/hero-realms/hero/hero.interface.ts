@@ -55,7 +55,7 @@ export type HireHeroDto = {
 export type UseHeroActionsDto = {
   heroId: number;
   playerId: number;
-  choiceAction?: keyof ActionWithoutAdditionalInfo;
+  choiceActionId?: number;
   heroIdForAction?: number;
 };
 

@@ -19,13 +19,19 @@ const DefendersRow = ({
 }: DefendersRow) => {
   const { toast } = useToast();
 
-  const handleClickCard = async (event: React.MouseEvent, id: number) => {
+  const handleClickCard = async (
+    event: React.MouseEvent,
+    id: number,
+    choiceActionId?: number
+  ) => {
+    console.log(id, choiceActionId);
     event.stopPropagation();
 
     if (currentPlayer.currentTurnPlayer) {
       await apiClient.hero.useHeroActions({
         heroId: id,
         playerId: currentPlayer.id,
+        choiceActionId,
       });
     }
   };
@@ -51,13 +57,13 @@ const DefendersRow = ({
     }
   };
 
-  const currentPlayerDefenders = currentPlayer.heroes.filter(
-    (hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW
-  );
+  const currentPlayerDefenders = currentPlayer.heroes
+    .filter((hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
-  const opponentPlayerPlayerDefenders = opponentPlayer.heroes.filter(
-    (hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW
-  );
+  const opponentPlayerPlayerDefenders = opponentPlayer.heroes
+    .filter((hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <Modal onClose={onClose}>
@@ -66,6 +72,7 @@ const DefendersRow = ({
           <div className={styles.cards}>
             {opponentPlayerPlayerDefenders.map((defender) => (
               <Card
+                isOpponentsCard
                 hero={defender}
                 onClick={(e) => handleAttackOpponentsCard(e, defender.id)}
               />
@@ -79,8 +86,11 @@ const DefendersRow = ({
           <div className={styles.cards}>
             {currentPlayerDefenders.map((defender) => (
               <Card
+                key={defender.id}
                 hero={defender}
-                onClick={(e) => handleClickCard(e, defender.id)}
+                onClick={(e, choiceActionId) =>
+                  handleClickCard(e, defender.id, choiceActionId)
+                }
               />
             ))}
           </div>

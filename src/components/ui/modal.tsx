@@ -2,7 +2,7 @@ import { Popover } from "./popover";
 
 type ModalProps = {
   children: React.ReactNode;
-  onClose: VoidFunction;
+  onClose?: VoidFunction;
 };
 
 const Modal = ({ children, onClose }: ModalProps) => {

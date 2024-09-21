@@ -1,5 +1,3 @@
-import { Action as ActionType } from "@/api/requests/hero-realms/hero/hero.interface";
-
 import {
   ACTION_CONDITION,
   CONDITIONS_WITH_FOR_EVERY,
@@ -9,7 +7,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getProperties } from "../utils/get-action-properties";
 import styles from "./action.module.css";
 
-const Action = ({ action, index }: { action: ActionType; index: number }) => {
+import type { ActionProps } from "./action.interface";
+
+const Action = ({
+  action,
+  index,
+  isOpponentsCard,
+  isOptionalActionChecked,
+  onOptionalCheckedChange,
+  isSomeChoiceUsed,
+  choiceActionId,
+  onChangeChoiceActionId,
+}: ActionProps) => {
   const isConditionsEmpty = !action.conditions.length;
 
   const isConditionWithForEvery = action.conditions.some((condition) =>
@@ -28,17 +37,23 @@ const Action = ({ action, index }: { action: ActionType; index: number }) => {
     ACTION_CONDITION.SACRIFICE
   );
 
+  const actionPropeties = getProperties(
+    action,
+    isOptionalActionChecked,
+    onOptionalCheckedChange
+  );
+
   switch (true) {
     case isConditionsEmpty ||
       (isConditionWithForEvery && action.conditions.length === 1): {
-      return getProperties(action);
+      return actionPropeties;
     }
 
     case isConditionWithFraction: {
       return (
         <div className={styles.divider}>
           fraction
-          <div className={styles.property}>{getProperties(action)}</div>
+          <div className={styles.property}>{actionPropeties}</div>
         </div>
       );
     }
@@ -47,24 +62,34 @@ const Action = ({ action, index }: { action: ActionType; index: number }) => {
       return (
         <div className={styles.divider}>
           sacrifice
-          <div className={styles.property}>{getProperties(action)}</div>
+          <div className={styles.property}>{actionPropeties}</div>
         </div>
       );
     }
 
     case isConditionWithChoice: {
-      const actionProperties = getProperties(action).filter((el) => el);
-
       return (
         <>
           {!index && "choice"}
 
           <RadioGroup className="flex justify-around w-full pl-10">
-            {actionProperties.map((el) => (
-              <div className="flex items-center space-x-2 w-full">
-                <RadioGroupItem id={el?.type} value={el?.type} />
+            {actionPropeties.map((el) => (
+              <div key={el?.key} className="flex items-center space-x-2 w-full">
+                <RadioGroupItem
+                  id={el?.type}
+                  value={el?.type}
+                  disabled={
+                    isOpponentsCard || action.isUsed || isSomeChoiceUsed
+                  }
+                  checked={choiceActionId === action.id || action.isUsed}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onChangeChoiceActionId(action.id);
+                  }}
+                />
                 <label htmlFor={el?.type} />
-                {el}
+
+                <div>{el}</div>
               </div>
             ))}
           </RadioGroup>
