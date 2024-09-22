@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import apiClient from "@/api/api-client";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
 import TradingRow from "./components/trading-row/trading-row";
 import InvertedCard from "./components/inverted-card/inverted-card";
 import PlayerDecks from "./components/player-decks/player-decks";
 import DefendersRow from "./components/defenders-row-modal/defenders-row-modal";
 import { useBattlefieldState } from "./hooks/use-battlefield-state";
-import { useToast } from "@/hooks/use-toast";
+
+import { OnClickCardPayload } from "./components/card/card.interface";
 
 const Battlefield = () => {
-  const { battlefield, player, opponentPlayer } = useBattlefieldState();
   const { toast } = useToast();
+  const { battlefield, player, opponentPlayer } = useBattlefieldState();
+
+  const clickedHeroId = useRef(0);
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
+  const [isResetDeckModalOpen, setResetDeckModalOpen] = useState(false);
 
   const handleEndMove = async () => {
     if (player.currentTurnPlayer) {
@@ -36,8 +42,29 @@ const Battlefield = () => {
     }
   };
 
+  const handleClickCard = async (payload: OnClickCardPayload) => {
+    if (
+      player.currentTurnPlayer &&
+      (!payload.checkedOptionalActions?.length || payload.heroIdForAction)
+    ) {
+      await apiClient.hero.useHeroActions({
+        heroId: payload.id,
+        playerId: player.id,
+        choiceActionId: payload.choiceActionId,
+        heroIdForAction: payload.heroIdForAction,
+      });
+      setResetDeckModalOpen(false);
+    } else if (payload.checkedOptionalActions?.length) {
+      setResetDeckModalOpen(true);
+    }
+  };
+
   const tradingDeckCount = battlefield.heroes.filter(
-    (hero) => hero.placement === "trading-deck"
+    (hero) => hero.placement === HERO_PLACEMENT.TRADING_DECK
+  ).length;
+
+  const sacrificialDeckCount = battlefield.heroes.filter(
+    (hero) => hero.placement === HERO_PLACEMENT.SACRIFICIAL_DECK
   ).length;
 
   return (
@@ -46,6 +73,9 @@ const Battlefield = () => {
         <DefendersRow
           currentPlayer={player}
           opponentPlayer={opponentPlayer}
+          clickedHeroId={clickedHeroId}
+          onClickCard={handleClickCard}
+          setResetDeckModalOpen={setResetDeckModalOpen}
           onClose={() => setDefendersModalOpen(false)}
         />
       )}
@@ -74,10 +104,16 @@ const Battlefield = () => {
       <div className="flex items-center">
         <TradingRow heroes={battlefield?.heroes ?? []} player={player} />
         <InvertedCard>Рынок: {tradingDeckCount}</InvertedCard>
-        <InvertedCard />
+        <InvertedCard>Жертвенная Колода: {sacrificialDeckCount}</InvertedCard>
       </div>
 
-      <PlayerDecks player={player} />
+      <PlayerDecks
+        player={player}
+        clickedHeroId={clickedHeroId}
+        isResetDeckModalOpen={isResetDeckModalOpen}
+        onClickCard={handleClickCard}
+        setResetDeckModalOpen={setResetDeckModalOpen}
+      />
 
       {player.currentTurnPlayer && (
         <Button onClick={handleEndMove}>Закончить ход</Button>

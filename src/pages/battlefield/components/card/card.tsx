@@ -31,7 +31,7 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
         return -1;
       }
 
-      if (a.conditions.length) {
+      if (a.conditions.length || b.conditions.length) {
         return a.conditions.length - b.conditions.length;
       }
 
@@ -40,6 +40,7 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
   }, [hero.actions]);
 
   const handleUseCard = (event: React.MouseEvent) => {
+    event.stopPropagation();
     const isSomeConditionWithChoice = hero.actions.some((action) =>
       action.conditions.includes(ACTION_CONDITION.CHOICE)
     );
@@ -48,12 +49,22 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
       (action) => action.isOptional
     );
 
+    const isSacrificeSelf = hero.actions.some(
+      (action) =>
+        action.conditions.includes(ACTION_CONDITION.SACRIFICE) &&
+        checkedOptionalActions.includes(action.id)
+    );
+
     if (isSomeConditionWithChoice) {
-      onClick?.(event, { choiceActionId });
+      onClick?.({ id: hero.id, choiceActionId });
     } else if (isSomeActionOptional) {
-      onClick?.(event, { checkedOptionalActions });
+      onClick?.({
+        id: hero.id,
+        checkedOptionalActions,
+        heroIdForAction: isSacrificeSelf ? hero.id : undefined,
+      });
     } else {
-      onClick?.(event, {});
+      onClick?.({ id: hero.id });
     }
   };
 

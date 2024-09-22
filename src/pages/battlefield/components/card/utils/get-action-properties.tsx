@@ -26,18 +26,28 @@ export const getProperties = (
         <div
           key={key}
           className="flex items-center "
-          style={{ textDecoration: action.isUsed ? "line-through" : "" }}
+          style={{
+            textDecoration: action.isUsed ? "line-through" : "",
+          }}
         >
           {action.isOptional && (
-            <Checkbox
-              checked={isCheked}
-              onCheckedChange={onOptionalCheckedChange}
-            />
+            <div
+              style={{
+                translate: "-280%",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Checkbox
+                checked={isCheked || action.isUsed}
+                disabled={action.isUsed}
+                onClick={(e) => e.stopPropagation()}
+                onCheckedChange={onOptionalCheckedChange}
+              />
+            </div>
           )}
-          <div className="pl-1">
-            {forEvery} {actionName}
-            {action.isOptional && "?"}: {actionValue}
-          </div>
+          {forEvery} {actionName}
+          {action.isOptional && "?"}: {actionValue}
         </div>
       );
     }

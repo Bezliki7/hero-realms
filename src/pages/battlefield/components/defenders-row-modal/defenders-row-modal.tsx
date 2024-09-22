@@ -5,43 +5,27 @@ import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import apiClient from "@/api/api-client";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/hooks/use-toast";
+import { OnClickCardPayload } from "../card/card.interface";
 
 type DefendersRow = {
   currentPlayer: Player;
   opponentPlayer: Player;
+  clickedHeroId: React.MutableRefObject<number>;
+  onClickCard: (payload: OnClickCardPayload) => void;
   onClose: VoidFunction;
+  setResetDeckModalOpen: (value: boolean) => void;
 };
 
 const DefendersRow = ({
   currentPlayer,
   opponentPlayer,
+  clickedHeroId,
+  onClickCard,
   onClose,
 }: DefendersRow) => {
   const { toast } = useToast();
 
-  const handleClickCard = async (
-    event: React.MouseEvent,
-    id: number,
-    choiceActionId?: number
-  ) => {
-    console.log(id, choiceActionId);
-    event.stopPropagation();
-
-    if (currentPlayer.currentTurnPlayer) {
-      await apiClient.hero.useHeroActions({
-        heroId: id,
-        playerId: currentPlayer.id,
-        choiceActionId,
-      });
-    }
-  };
-
-  const handleAttackOpponentsCard = async (
-    event: React.MouseEvent,
-    heroId: number
-  ) => {
-    event.stopPropagation();
-
+  const handleAttackOpponentsCard = async (heroId: number) => {
     if (currentPlayer.currentDamageCount) {
       const res = await apiClient.player.attackPlayer({
         attackingPlayerId: currentPlayer.id,
@@ -74,7 +58,7 @@ const DefendersRow = ({
               <Card
                 isOpponentsCard
                 hero={defender}
-                onClick={(e) => handleAttackOpponentsCard(e, defender.id)}
+                onClick={() => handleAttackOpponentsCard(defender.id)}
               />
             ))}
           </div>
@@ -88,9 +72,10 @@ const DefendersRow = ({
               <Card
                 key={defender.id}
                 hero={defender}
-                onClick={(e, choiceActionId) =>
-                  handleClickCard(e, defender.id, choiceActionId)
-                }
+                onClick={(payload) => {
+                  clickedHeroId.current = defender.id;
+                  onClickCard(payload);
+                }}
               />
             ))}
           </div>

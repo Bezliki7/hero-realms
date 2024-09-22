@@ -2,11 +2,13 @@ import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 export type CardProps = {
   hero: Hero;
-  onClick?: (event: React.MouseEvent, payload: OnClickPayload) => void;
+  onClick?: (payload: OnClickCardPayload) => void;
   isOpponentsCard?: boolean;
 };
 
-export type OnClickPayload = {
+export type OnClickCardPayload = {
+  id: number;
   choiceActionId?: number;
   checkedOptionalActions?: number[];
+  heroIdForAction?: number;
 };
