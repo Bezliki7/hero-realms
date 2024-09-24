@@ -11,7 +11,7 @@ const Modal = ({ children, onClose }: ModalProps) => {
       className="flex absolute z-10 w-screen h-screen bg-[#11111199] top-0 left-0"
       onClick={onClose}
     >
-      <Popover modal>{children}</Popover>;
+      <Popover modal>{children}</Popover>
     </div>
   );
 };

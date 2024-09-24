@@ -9,10 +9,13 @@ type ActiveDeckProps = {
   heroes: Hero[];
   clickedHeroId: React.MutableRefObject<number>;
   onClickCard: (payload: OnClickCardPayload) => void;
-  setResetDeckModalOpen: () => void;
 };
 
-const ActiveDeck = ({ heroes, onClickCard }: ActiveDeckProps) => {
+const ActiveDeck = ({
+  heroes,
+  clickedHeroId,
+  onClickCard,
+}: ActiveDeckProps) => {
   const sortedHeroes = heroes.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -20,7 +23,13 @@ const ActiveDeck = ({ heroes, onClickCard }: ActiveDeckProps) => {
       {sortedHeroes.map((hero) => {
         return (
           <div key={hero.id} className={styles.card}>
-            <Card hero={hero} onClick={onClickCard} />
+            <Card
+              hero={hero}
+              onClick={(e) => {
+                clickedHeroId.current = hero.id;
+                onClickCard(e);
+              }}
+            />
           </div>
         );
       })}

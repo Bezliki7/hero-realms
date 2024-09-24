@@ -8,10 +8,8 @@ import type { PlayerDecksProps } from "./player-deck.interface";
 
 const PlayerDecks = ({
   player,
-  isResetDeckModalOpen,
   clickedHeroId,
   onClickCard,
-  setResetDeckModalOpen,
 }: PlayerDecksProps) => {
   const activeDeck =
     player.heroes.filter(
@@ -33,16 +31,9 @@ const PlayerDecks = ({
           heroes={activeDeck}
           clickedHeroId={clickedHeroId}
           onClickCard={onClickCard}
-          setResetDeckModalOpen={() => setResetDeckModalOpen(true)}
         />
         <SelectionDeck selectionDeckCount={selectionDeckCount} />
-        <ResetDeck
-          heroes={resetDeck}
-          isResetDeckModalOpen={isResetDeckModalOpen}
-          clickedHeroId={clickedHeroId}
-          onClickCard={onClickCard}
-          onCloseModal={() => setResetDeckModalOpen(false)}
-        />
+        <ResetDeck heroes={resetDeck} />
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ export type HeroPlacement =
   | "sacrificial-deck"
   | "trading-deck"
   | "trading-row"
-  | "defenders-row";
+  | "defenders-row"
 
 export type Action = {
   id: number;
@@ -37,6 +37,7 @@ export type Action = {
   heal: number;
   gold: number;
   takeCard: number;
+  sacrificeCard: number;
   resetCard: number;
   resetOpponentsCard: number;
   stanOpponentsHero: number;

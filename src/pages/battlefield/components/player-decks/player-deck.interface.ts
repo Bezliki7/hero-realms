@@ -4,10 +4,8 @@ import type { OnClickCardPayload } from "../card/card.interface";
 
 export type PlayerDecksProps = {
   player: Player;
-  isResetDeckModalOpen: boolean;
   clickedHeroId: React.MutableRefObject<number>;
   onClickCard: (payload: OnClickCardPayload) => void;
-  setResetDeckModalOpen: (value: boolean) => void;
 };
 
 export type HandleClickCardParams = {

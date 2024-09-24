@@ -13,7 +13,6 @@ type DefendersRow = {
   clickedHeroId: React.MutableRefObject<number>;
   onClickCard: (payload: OnClickCardPayload) => void;
   onClose: VoidFunction;
-  setResetDeckModalOpen: (value: boolean) => void;
 };
 
 const DefendersRow = ({

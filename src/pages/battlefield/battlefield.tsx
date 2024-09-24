@@ -10,8 +10,9 @@ import InvertedCard from "./components/inverted-card/inverted-card";
 import PlayerDecks from "./components/player-decks/player-decks";
 import DefendersRow from "./components/defenders-row-modal/defenders-row-modal";
 import { useBattlefieldState } from "./hooks/use-battlefield-state";
+import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
 
-import { OnClickCardPayload } from "./components/card/card.interface";
+import type { OnClickCardPayload } from "./components/card/card.interface";
 
 const Battlefield = () => {
   const { toast } = useToast();
@@ -19,7 +20,7 @@ const Battlefield = () => {
 
   const clickedHeroId = useRef(0);
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
-  const [isResetDeckModalOpen, setResetDeckModalOpen] = useState(false);
+  const [isChooseModalOpen, setChooseModalOpen] = useState(false);
 
   const handleEndMove = async () => {
     if (player.currentTurnPlayer) {
@@ -53,9 +54,9 @@ const Battlefield = () => {
         choiceActionId: payload.choiceActionId,
         heroIdForAction: payload.heroIdForAction,
       });
-      setResetDeckModalOpen(false);
+      setChooseModalOpen(false);
     } else if (payload.checkedOptionalActions?.length) {
-      setResetDeckModalOpen(true);
+      setChooseModalOpen(true);
     }
   };
 
@@ -75,7 +76,6 @@ const Battlefield = () => {
           opponentPlayer={opponentPlayer}
           clickedHeroId={clickedHeroId}
           onClickCard={handleClickCard}
-          setResetDeckModalOpen={setResetDeckModalOpen}
           onClose={() => setDefendersModalOpen(false)}
         />
       )}
@@ -110,14 +110,20 @@ const Battlefield = () => {
       <PlayerDecks
         player={player}
         clickedHeroId={clickedHeroId}
-        isResetDeckModalOpen={isResetDeckModalOpen}
         onClickCard={handleClickCard}
-        setResetDeckModalOpen={setResetDeckModalOpen}
       />
 
       {player.currentTurnPlayer && (
         <Button onClick={handleEndMove}>Закончить ход</Button>
       )}
+
+      <HeroesToChooseModal
+        heroes={player.heroes}
+        clickedHeroId={clickedHeroId}
+        onClickCard={handleClickCard}
+        isChooseModalOpen={isChooseModalOpen}
+        onCloseModal={() => setChooseModalOpen(false)}
+      />
     </>
   );
 };
