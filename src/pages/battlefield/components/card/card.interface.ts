@@ -11,4 +11,5 @@ export type OnClickCardPayload = {
   choiceActionId?: number;
   checkedOptionalActions?: number[];
   heroIdForAction?: number;
+  needHeroForAction?: boolean;
 };

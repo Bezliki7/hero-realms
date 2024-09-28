@@ -21,6 +21,7 @@ const Battlefield = () => {
   const clickedHeroId = useRef(0);
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
   const [isChooseModalOpen, setChooseModalOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleEndMove = async () => {
     if (player.currentTurnPlayer) {
@@ -44,18 +45,31 @@ const Battlefield = () => {
   };
 
   const handleClickCard = async (payload: OnClickCardPayload) => {
+    if (!player.currentTurnPlayer || isLoading) {
+      toast({
+        title: "Ошибка",
+        description: "Сейчас ход другого игрока",
+      });
+      return;
+    }
+    console.log(payload);
     if (
-      player.currentTurnPlayer &&
+      !payload.needHeroForAction &&
       (!payload.checkedOptionalActions?.length || payload.heroIdForAction)
     ) {
+      setLoading(true);
       await apiClient.hero.useHeroActions({
         heroId: payload.id,
         playerId: player.id,
         choiceActionId: payload.choiceActionId,
         heroIdForAction: payload.heroIdForAction,
       });
+      setLoading(false);
       setChooseModalOpen(false);
-    } else if (payload.checkedOptionalActions?.length) {
+    } else if (
+      payload.needHeroForAction ||
+      payload.checkedOptionalActions?.length
+    ) {
       setChooseModalOpen(true);
     }
   };
@@ -117,13 +131,15 @@ const Battlefield = () => {
         <Button onClick={handleEndMove}>Закончить ход</Button>
       )}
 
-      <HeroesToChooseModal
-        heroes={player.heroes}
-        clickedHeroId={clickedHeroId}
-        onClickCard={handleClickCard}
-        isChooseModalOpen={isChooseModalOpen}
-        onCloseModal={() => setChooseModalOpen(false)}
-      />
+      {isChooseModalOpen && (
+        <HeroesToChooseModal
+          heroes={player.heroes}
+          oponentsHeroes={opponentPlayer.heroes}
+          clickedHeroId={clickedHeroId}
+          onClickCard={handleClickCard}
+          onCloseModal={() => setChooseModalOpen(false)}
+        />
+      )}
     </>
   );
 };

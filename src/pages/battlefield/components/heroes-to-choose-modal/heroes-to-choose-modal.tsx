@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Modal } from "@/components/ui/modal";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
@@ -10,7 +12,7 @@ import type { OnClickCardPayload } from "../card/card.interface";
 
 type HeroesToChooseModalProps = {
   heroes: Hero[];
-  isChooseModalOpen: boolean;
+  oponentsHeroes: Hero[];
   clickedHeroId: React.MutableRefObject<number>;
   onClickCard: (payload: OnClickCardPayload) => void;
   onCloseModal: () => void;
@@ -18,7 +20,7 @@ type HeroesToChooseModalProps = {
 
 const HeroesToChooseModal = ({
   heroes,
-  isChooseModalOpen,
+  oponentsHeroes,
   clickedHeroId,
   onClickCard,
   onCloseModal,
@@ -40,13 +42,30 @@ const HeroesToChooseModal = ({
   const heroWithSacrificeCard = clickedHeroBefore?.actions.some(
     (action) => action.sacrificeCard
   );
+  const heroWithPutToDeckResetedCard = clickedHeroBefore?.actions.some(
+    (action) => action.putToDeckResetedCard
+  );
+  const heroWithPrepareHero = clickedHeroBefore?.actions.some(
+    (action) => action.prepareHero
+  );
+  const heroWithStanOpponentsHero = clickedHeroBefore?.actions.some(
+    (action) => action.stanOpponentsHero
+  );
 
   const filteredHeroes = heroes.filter((hero) => {
     if (clickedHeroId.current === hero.id) {
       return false;
     }
+    if (heroWithPrepareHero) {
+      return (
+        hero.placement === HERO_PLACEMENT.SELECTION_DECK && hero.protection
+      );
+    }
     if (heroWithResetCard) {
       return hero.placement === HERO_PLACEMENT.ACTIVE_DECK;
+    }
+    if (heroWithPutToDeckResetedCard) {
+      return hero.placement === HERO_PLACEMENT.RESET_DECK;
     }
     if (heroWithSacrificeCard) {
       return (
@@ -54,13 +73,29 @@ const HeroesToChooseModal = ({
         hero.placement === HERO_PLACEMENT.RESET_DECK
       );
     }
+
     return false;
   });
 
+  if (heroWithStanOpponentsHero) {
+    filteredHeroes.length = 0;
+    const opponentsHero = oponentsHeroes.filter(
+      (hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW
+    );
+    filteredHeroes.push(...opponentsHero);
+  }
+
+  useEffect(() => {
+    if (!filteredHeroes.length) {
+      onClickCard({ id: clickedHeroId.current });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredHeroes.length]);
+
   return (
     <div onClick={onCloseModal}>
-      {isChooseModalOpen && filteredHeroes.length && (
-        <Modal>
+      {filteredHeroes.length ? (
+        <Modal zIndex={100}>
           <div>
             Выберите героя для действия
             <div className={styles.cards}>
@@ -70,7 +105,7 @@ const HeroesToChooseModal = ({
             </div>
           </div>
         </Modal>
-      )}
+      ) : null}
     </div>
   );
 };

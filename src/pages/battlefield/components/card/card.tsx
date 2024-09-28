@@ -4,7 +4,10 @@ import { ACTION_CONDITION } from "@/api/requests/hero-realms/hero/hero.constant"
 
 import Action from "./action/action";
 import Header from "./header/header";
-import { PROTECTION_BG_COLOR } from "./card.constant";
+import {
+  ACTIONS_WITH_NEEDED_TARGET_HERO,
+  PROTECTION_BG_COLOR,
+} from "./card.constant";
 import styles from "./card.module.css";
 
 import type { CardProps } from "./card.interface";
@@ -41,6 +44,7 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
 
   const handleUseCard = (event: React.MouseEvent) => {
     event.stopPropagation();
+
     const isSomeConditionWithChoice = hero.actions.some((action) =>
       action.conditions.includes(ACTION_CONDITION.CHOICE)
     );
@@ -55,6 +59,13 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
         checkedOptionalActions.includes(action.id)
     );
 
+    const isNeedHeroForAction = hero.actions.some(
+      (action) =>
+        Object.entries(action).some(([actionName]) =>
+          ACTIONS_WITH_NEEDED_TARGET_HERO.includes(actionName)
+        ) && !action.isUsed
+    );
+
     if (isSomeConditionWithChoice) {
       onClick?.({ id: hero.id, choiceActionId });
     } else if (isSomeActionOptional) {
@@ -64,7 +75,10 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
         heroIdForAction: isSacrificeSelf ? hero.id : undefined,
       });
     } else {
-      onClick?.({ id: hero.id });
+      onClick?.({
+        id: hero.id,
+        needHeroForAction: isNeedHeroForAction ? true : undefined,
+      });
     }
   };
 
