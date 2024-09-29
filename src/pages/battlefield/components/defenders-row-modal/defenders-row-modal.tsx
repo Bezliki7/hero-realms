@@ -55,6 +55,7 @@ const DefendersRow = ({
           <div className={styles.cards}>
             {opponentPlayerPlayerDefenders.map((defender) => (
               <Card
+                key={defender.id}
                 isOpponentsCard
                 hero={defender}
                 onClick={() => handleAttackOpponentsCard(defender.id)}

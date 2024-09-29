@@ -13,8 +13,9 @@ import type { OnClickCardPayload } from "../card/card.interface";
 type HeroesToChooseModalProps = {
   heroes: Hero[];
   oponentsHeroes: Hero[];
-  clickedHeroId: React.MutableRefObject<number>;
+  clickedHeroId: number;
   onClickCard: (payload: OnClickCardPayload) => void;
+  resetCardByOpponent: (cardId: number) => void;
   onCloseModal: () => void;
 };
 
@@ -23,18 +24,21 @@ const HeroesToChooseModal = ({
   oponentsHeroes,
   clickedHeroId,
   onClickCard,
+  resetCardByOpponent,
   onCloseModal,
 }: HeroesToChooseModalProps) => {
   const onChoose = (payload: OnClickCardPayload) => {
-    onClickCard({
-      id: clickedHeroId.current,
-      heroIdForAction: payload.id,
-    });
+    if (clickedHeroId) {
+      onClickCard({
+        id: clickedHeroId,
+        heroIdForAction: payload.id,
+      });
+    } else {
+      resetCardByOpponent(payload.id);
+    }
   };
 
-  const clickedHeroBefore = heroes.find(
-    (hero) => hero.id === clickedHeroId.current
-  );
+  const clickedHeroBefore = heroes.find((hero) => hero.id === clickedHeroId);
 
   const heroWithResetCard = clickedHeroBefore?.actions.some(
     (action) => action.resetCard
@@ -53,9 +57,14 @@ const HeroesToChooseModal = ({
   );
 
   const filteredHeroes = heroes.filter((hero) => {
-    if (clickedHeroId.current === hero.id) {
+    if (clickedHeroId === hero.id) {
       return false;
     }
+
+    if (!clickedHeroId) {
+      return hero.placement === HERO_PLACEMENT.ACTIVE_DECK;
+    }
+
     if (heroWithPrepareHero) {
       return (
         hero.placement === HERO_PLACEMENT.SELECTION_DECK && hero.protection
@@ -87,7 +96,7 @@ const HeroesToChooseModal = ({
 
   useEffect(() => {
     if (!filteredHeroes.length) {
-      onClickCard({ id: clickedHeroId.current });
+      onClickCard({ id: clickedHeroId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredHeroes.length]);
@@ -100,7 +109,7 @@ const HeroesToChooseModal = ({
             Выберите героя для действия
             <div className={styles.cards}>
               {filteredHeroes.map((hero) => (
-                <Card hero={hero} onClick={onChoose} />
+                <Card key={hero.id} hero={hero} onClick={onChoose} />
               ))}
             </div>
           </div>

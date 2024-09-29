@@ -1,16 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useBattlefield } from "@/hooks/use-battlefield";
 import { usePlayer } from "@/hooks/use-player";
 
 import type { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
 
-import battlefieldService from "../services/battlefield.service";
+import battlefieldWsService from "../services/battlefield.service";
 
-export const useBattlefieldState = () => {
+export const useBattlefieldState = (openChooseModal: () => void) => {
   const { player, setPlayer } = usePlayer();
   const { battlefield, setBattlefield } = useBattlefield();
   const [isInit, setInit] = useState(false);
+
+  const wsService = useMemo(
+    () => new battlefieldWsService(player.id),
+    [player.id]
+  );
+
+  const opponentPlayer = battlefield.players.filter(
+    ({ id }) => id !== player.id
+  )?.[0];
 
   const handleBattlefieldUpdate = (battlefield: Battlefield) => {
     setBattlefield(battlefield);
@@ -26,8 +35,11 @@ export const useBattlefieldState = () => {
 
   useEffect(() => {
     if (battlefield.id && !isInit) {
-      battlefieldService.init(battlefield.id);
-      battlefieldService.subscribeToUpdatedBattlefield(handleBattlefieldUpdate);
+      wsService.init(battlefield.id);
+
+      wsService.subscribeToUpdatedBattlefield(handleBattlefieldUpdate);
+      wsService.subscribeToNeedResetCard(openChooseModal);
+
       if (battlefield.heroes.length) {
         setInit(true);
       }
@@ -35,9 +47,5 @@ export const useBattlefieldState = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [battlefield, isInit, setBattlefield]);
 
-  const opponentPlayer = battlefield.players.filter(
-    ({ id }) => id !== player.id
-  )?.[0];
-
-  return { battlefield, player, opponentPlayer };
+  return { wsService, battlefield, player, opponentPlayer };
 };

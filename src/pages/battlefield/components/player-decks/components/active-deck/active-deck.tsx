@@ -25,9 +25,9 @@ const ActiveDeck = ({
           <div key={hero.id} className={styles.card}>
             <Card
               hero={hero}
-              onClick={(e) => {
+              onClick={(payload) => {
                 clickedHeroId.current = hero.id;
-                onClickCard(e);
+                onClickCard(payload);
               }}
             />
           </div>

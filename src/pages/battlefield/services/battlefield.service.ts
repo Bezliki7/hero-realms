@@ -1,14 +1,19 @@
 import { io, Socket } from "socket.io-client";
 
-import { CLIENT_MESSAGES, WS_URL } from "./battlefield.constant";
-import { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
+import type { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
 
-class BattlefieldWsService {
+import { CLIENT_MESSAGES, WS_URL } from "./battlefield.constant";
+
+class battlefieldWsService {
   public socket: Socket;
 
-  constructor() {
+  constructor(playerId: number) {
     this.socket = io(WS_URL, {
       transports: ["websocket"],
+      autoConnect: false,
+      auth: {
+        userId: playerId,
+      },
     });
   }
 
@@ -32,11 +37,19 @@ class BattlefieldWsService {
     });
   }
 
+  public resetCard(cardId: number) {
+    this.socket.emit(CLIENT_MESSAGES.RESET_CARD, cardId);
+  }
+
   public subscribeToUpdatedBattlefield(
     callback: (battlefield: Battlefield) => void
   ) {
     this.socket.on(CLIENT_MESSAGES.BATTLEFIELD_UPDATED, callback);
   }
+
+  public subscribeToNeedResetCard(callback: () => void) {
+    this.socket.on(CLIENT_MESSAGES.NEED_TO_RESET_CARD, callback);
+  }
 }
 
-export default new BattlefieldWsService();
+export default battlefieldWsService;

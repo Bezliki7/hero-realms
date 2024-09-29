@@ -16,4 +16,6 @@ export const ACTIONS_WITH_NEEDED_TARGET_HERO = [
   "prepareHero",
   "resetOpponentsCard",
   "stanOpponentsHero",
+  "putToDeckResetedCard",
+  "putToDeckResetedDefender",
 ];

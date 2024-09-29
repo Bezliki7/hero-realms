@@ -73,11 +73,12 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
         id: hero.id,
         checkedOptionalActions,
         heroIdForAction: isSacrificeSelf ? hero.id : undefined,
+        needHeroForAction: isNeedHeroForAction,
       });
     } else {
       onClick?.({
         id: hero.id,
-        needHeroForAction: isNeedHeroForAction ? true : undefined,
+        needHeroForAction: isNeedHeroForAction,
       });
     }
   };

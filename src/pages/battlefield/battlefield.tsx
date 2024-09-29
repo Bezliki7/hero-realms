@@ -15,13 +15,13 @@ import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-c
 import type { OnClickCardPayload } from "./components/card/card.interface";
 
 const Battlefield = () => {
-  const { toast } = useToast();
-  const { battlefield, player, opponentPlayer } = useBattlefieldState();
-
   const clickedHeroId = useRef(0);
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
   const [isChooseModalOpen, setChooseModalOpen] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+
+  const { toast } = useToast();
+  const { battlefield, player, opponentPlayer, wsService } =
+    useBattlefieldState(() => setChooseModalOpen(true));
 
   const handleEndMove = async () => {
     if (player.currentTurnPlayer) {
@@ -45,7 +45,7 @@ const Battlefield = () => {
   };
 
   const handleClickCard = async (payload: OnClickCardPayload) => {
-    if (!player.currentTurnPlayer || isLoading) {
+    if (!player.currentTurnPlayer) {
       toast({
         title: "Ошибка",
         description: "Сейчас ход другого игрока",
@@ -57,15 +57,14 @@ const Battlefield = () => {
       !payload.needHeroForAction &&
       (!payload.checkedOptionalActions?.length || payload.heroIdForAction)
     ) {
-      setLoading(true);
       await apiClient.hero.useHeroActions({
         heroId: payload.id,
         playerId: player.id,
         choiceActionId: payload.choiceActionId,
         heroIdForAction: payload.heroIdForAction,
       });
-      setLoading(false);
       setChooseModalOpen(false);
+      clickedHeroId.current = 0;
     } else if (
       payload.needHeroForAction ||
       payload.checkedOptionalActions?.length
@@ -135,8 +134,9 @@ const Battlefield = () => {
         <HeroesToChooseModal
           heroes={player.heroes}
           oponentsHeroes={opponentPlayer.heroes}
-          clickedHeroId={clickedHeroId}
+          clickedHeroId={clickedHeroId.current}
           onClickCard={handleClickCard}
+          resetCardByOpponent={(id: number) => wsService.resetCard(id)}
           onCloseModal={() => setChooseModalOpen(false)}
         />
       )}
