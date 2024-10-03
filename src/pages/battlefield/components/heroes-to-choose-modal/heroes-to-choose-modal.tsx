@@ -35,6 +35,7 @@ const HeroesToChooseModal = ({
       });
     } else {
       resetCardByOpponent(payload.id);
+      onCloseModal();
     }
   };
 

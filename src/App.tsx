@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { RouterProvider } from "react-router-dom";
 
 import apiClient from "./api/api-client";
-import { router } from "./pages";
+import { Routes } from "./pages";
 import Settings from "./pages/settings/settings";
 import Providers from "./contexts";
 import { PLAYER_INFO_KEY } from "./pages/settings/settings.constant";
@@ -15,6 +14,7 @@ import type { Player } from "./api/requests/hero-realms/player/player.interface"
 const App = () => {
   const [battlefield, setBattlefield] = useState<Battlefield>();
   const [player, setPlayer] = useState<Player>();
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
@@ -33,18 +33,23 @@ const App = () => {
         setBattlefield(battlefield.data);
         setPlayer(player.data);
       }
+      setLoading(false);
     };
 
     fetch();
   }, []);
 
-  if (!battlefield || !player) {
+  if (isLoading) {
+    return "...loading";
+  }
+
+  if (!(battlefield && player)) {
     return <Settings />;
   }
 
   return (
     <Providers battlefield={battlefield} player={player}>
-      <RouterProvider router={router} />
+      <Routes />
       <Toaster />
     </Providers>
   );

@@ -1,11 +1,13 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { lazy, Suspense } from "react";
 
 import StartScreen from "./start-screen/start-screen";
-import AllHeroes from "./all-heroes/all-heroes";
-import Settings from "./settings/settings";
 import Battlefield from "./battlefield/battlefield";
 
-export const router = createBrowserRouter([
+const AllHeroes = lazy(() => import("./all-heroes/all-heroes"));
+const Settings = lazy(() => import("./settings/settings"));
+
+const router = createBrowserRouter([
   {
     path: "/",
     element: <StartScreen />,
@@ -23,3 +25,9 @@ export const router = createBrowserRouter([
     element: <Battlefield />,
   },
 ]);
+
+export const Routes = () => (
+  <Suspense fallback={"...loading"}>
+    <RouterProvider router={router} />
+  </Suspense>
+);
