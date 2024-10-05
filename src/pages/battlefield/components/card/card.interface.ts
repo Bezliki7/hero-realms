@@ -4,6 +4,7 @@ export type CardProps = {
   hero: Hero;
   onClick?: (payload: OnClickCardPayload) => void;
   isOpponentsCard?: boolean;
+  classname?: string;
 };
 
 export type OnClickCardPayload = {

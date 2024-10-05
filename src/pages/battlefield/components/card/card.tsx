@@ -11,8 +11,14 @@ import {
 import styles from "./card.module.css";
 
 import type { CardProps } from "./card.interface";
+import { cn } from "@/lib/utils";
 
-const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
+const Card = ({
+  hero,
+  onClick,
+  classname,
+  isOpponentsCard = false,
+}: CardProps) => {
   const [checkedOptionalActions, setCheckedOptionalActions] = useState<
     number[]
   >([]);
@@ -96,7 +102,10 @@ const Card = ({ hero, onClick, isOpponentsCard = false }: CardProps) => {
   };
 
   return (
-    <section className={styles.container} onClick={handleUseCard}>
+    <section
+      className={cn(classname, styles.container)}
+      onClick={handleUseCard}
+    >
       <Header name={hero.name} price={hero.price} fraction={hero.fraction} />
 
       <svg className={styles.image}>

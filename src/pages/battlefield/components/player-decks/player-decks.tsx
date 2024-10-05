@@ -3,6 +3,7 @@ import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import ActiveDeck from "./components/active-deck/active-deck";
 import SelectionDeck from "./components/selection-deck/selection-deck";
 import ResetDeck from "./components/reset-deck/reset-deck";
+import styles from "./player-decks.module.css";
 
 import type { PlayerDecksProps } from "./player-deck.interface";
 
@@ -25,16 +26,14 @@ const PlayerDecks = ({
   );
 
   return (
-    <div>
-      <div className="flex items-center">
-        <ActiveDeck
-          heroes={activeDeck}
-          clickedHeroId={clickedHeroId}
-          onClickCard={onClickCard}
-        />
-        <SelectionDeck selectionDeckCount={selectionDeckCount} />
-        <ResetDeck heroes={resetDeck} />
-      </div>
+    <div className={styles.container}>
+      <ActiveDeck
+        heroes={activeDeck}
+        clickedHeroId={clickedHeroId}
+        onClickCard={onClickCard}
+      />
+      <SelectionDeck selectionDeckCount={selectionDeckCount} />
+      <ResetDeck heroes={resetDeck} />
     </div>
   );
 };

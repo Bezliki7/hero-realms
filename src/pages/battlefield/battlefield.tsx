@@ -3,10 +3,8 @@ import { useRef, useState } from "react";
 import apiClient from "@/api/api-client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
 import TradingRow from "./components/trading-row/trading-row";
-import InvertedCard from "./components/inverted-card/inverted-card";
 import PlayerDecks from "./components/player-decks/player-decks";
 import DefendersRow from "./components/defenders-row-modal/defenders-row-modal";
 import { useBattlefieldState } from "./hooks/use-battlefield-state";
@@ -45,6 +43,7 @@ const Battlefield = () => {
   };
 
   const handleClickCard = async (payload: OnClickCardPayload) => {
+    console.log(player);
     if (!player.currentTurnPlayer) {
       toast({
         title: "Ошибка",
@@ -73,26 +72,8 @@ const Battlefield = () => {
     }
   };
 
-  const tradingDeckCount = battlefield.heroes.filter(
-    (hero) => hero.placement === HERO_PLACEMENT.TRADING_DECK
-  ).length;
-
-  const sacrificialDeckCount = battlefield.heroes.filter(
-    (hero) => hero.placement === HERO_PLACEMENT.SACRIFICIAL_DECK
-  ).length;
-
   return (
-    <>
-      {isDefendersModalOpen && (
-        <DefendersRow
-          currentPlayer={player}
-          opponentPlayer={opponentPlayer}
-          clickedHeroId={clickedHeroId}
-          onClickCard={handleClickCard}
-          onClose={() => setDefendersModalOpen(false)}
-        />
-      )}
-
+    <div className="overflow-y-hidden">
       {battlefield.players.map((player) => (
         <div key={player.id}>
           {player.name}
@@ -102,9 +83,7 @@ const Battlefield = () => {
       ))}
 
       <div className="flex p-2 gap-8">
-        <Button onClick={() => setDefendersModalOpen(true)}>
-          Посмотреть на защитников
-        </Button>
+        <Button onClick={() => setDefendersModalOpen(true)}>Защитники</Button>
 
         <Button
           disabled={!player.currentDamageCount}
@@ -116,8 +95,6 @@ const Battlefield = () => {
 
       <div className="flex items-center">
         <TradingRow heroes={battlefield?.heroes ?? []} player={player} />
-        <InvertedCard>Рынок: {tradingDeckCount}</InvertedCard>
-        <InvertedCard>Жертвенная Колода: {sacrificialDeckCount}</InvertedCard>
       </div>
 
       <PlayerDecks
@@ -126,9 +103,15 @@ const Battlefield = () => {
         onClickCard={handleClickCard}
       />
 
-      {player.currentTurnPlayer && (
-        <Button onClick={handleEndMove}>Закончить ход</Button>
-      )}
+      <div style={{ marginTop: -120 }}>
+        {player.currentTurnPlayer && (
+          <Button onClick={handleEndMove}>Закончить ход</Button>
+        )}
+
+        {battlefield.players.some((player) => !player.health) && (
+          <Button onClick={handleClearBattlefield}>Очистить поле битвы</Button>
+        )}
+      </div>
 
       {isChooseModalOpen && (
         <HeroesToChooseModal
@@ -141,6 +124,16 @@ const Battlefield = () => {
         />
       )}
     </>
+      {isDefendersModalOpen && (
+        <DefendersRow
+          currentPlayer={player}
+          opponentPlayer={opponentPlayer}
+          clickedHeroId={clickedHeroId}
+          onClickCard={handleClickCard}
+          onClose={() => setDefendersModalOpen(false)}
+        />
+      )}
+    </div>
   );
 };
 

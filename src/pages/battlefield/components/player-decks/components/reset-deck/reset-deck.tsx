@@ -9,13 +9,9 @@ type ResetDeckDeckProps = {
 
 const ResetDeck = ({ heroes }: ResetDeckDeckProps) => {
   return (
-    <>
-      <InvertedCard>
-        <div className={styles.label}>
-          Карт в колоде сброса: {heroes.length}
-        </div>
-      </InvertedCard>
-    </>
+    <InvertedCard>
+      <div className={styles.label}>Карт в колоде сброса: {heroes.length}</div>
+    </InvertedCard>
   );
 };
 

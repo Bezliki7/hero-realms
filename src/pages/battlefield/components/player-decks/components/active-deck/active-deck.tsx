@@ -22,15 +22,15 @@ const ActiveDeck = ({
     <div className={styles.container}>
       {sortedHeroes.map((hero) => {
         return (
-          <div key={hero.id} className={styles.card}>
-            <Card
-              hero={hero}
-              onClick={(payload) => {
-                clickedHeroId.current = hero.id;
-                onClickCard(payload);
-              }}
-            />
-          </div>
+          <Card
+            key={hero.id}
+            classname={styles.card}
+            hero={hero}
+            onClick={(payload) => {
+              clickedHeroId.current = hero.id;
+              onClickCard(payload);
+            }}
+          />
         );
       })}
     </div>

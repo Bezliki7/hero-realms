@@ -1,19 +1,8 @@
 .container {
   display: flex;
-
-  .card {
-    transform: scale(0.6);
-    transform-origin: top left;
-    padding-right: 170px;
-    padding-bottom: 230px;
-  }
+  gap: 5px;
 }
 
 .card {
-  height: min-content;
-
-  section {
-    height: 380px;
-    position: absolute;
-  }
+  height: 380px;
 }
