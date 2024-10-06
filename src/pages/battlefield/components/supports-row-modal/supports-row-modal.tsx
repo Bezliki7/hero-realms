@@ -1,11 +1,12 @@
 import { Modal } from "@/components/ui/modal";
-import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import { usePlayer } from "@/hooks/use-player";
 import { useToast } from "@/hooks/use-toast";
 import apiClient from "@/api/api-client";
+import Card from "@/components/hero-card/card";
 
-import Card from "../card/card";
+import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
+
 import styles from "./supports-row-modal.module.css";
 
 type SupportsRowModalProps = {

@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
+import Loader from "@/components/loader/loader";
+
 import StartScreen from "./start-screen/start-screen";
 import Battlefield from "./battlefield/battlefield";
 
@@ -27,7 +29,7 @@ const router = createBrowserRouter([
 ]);
 
 export const Routes = () => (
-  <Suspense fallback={"...loading"}>
+  <Suspense fallback={<Loader />}>
     <RouterProvider router={router} />
   </Suspense>
 );

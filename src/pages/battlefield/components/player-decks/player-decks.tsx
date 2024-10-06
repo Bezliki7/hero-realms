@@ -12,10 +12,9 @@ const PlayerDecks = ({
   clickedHeroId,
   onClickCard,
 }: PlayerDecksProps) => {
-  const activeDeck =
-    player.heroes.filter(
-      (hero) => hero.placement === HERO_PLACEMENT.ACTIVE_DECK
-    ) ?? [];
+  const activeDeck = player.heroes.filter(
+    (hero) => hero.placement === HERO_PLACEMENT.ACTIVE_DECK
+  );
 
   const selectionDeckCount = player.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.SELECTION_DECK

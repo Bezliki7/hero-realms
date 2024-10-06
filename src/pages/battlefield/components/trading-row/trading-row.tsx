@@ -1,13 +1,13 @@
-import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
-import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import apiClient from "@/api/api-client";
 import { useToast } from "@/hooks/use-toast";
-
-import Card from "../card/card";
-import InvertedCard from "../inverted-card/inverted-card";
-import styles from "./trading-row.module.css";
+import Card from "@/components/hero-card/card";
+import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
 import type { Player } from "@/api/requests/hero-realms/player/player.interface";
+import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
+
+import InvertedCard from "../../../../components/inverted-card/inverted-card";
+import styles from "./trading-row.module.css";
 
 type TradingRowProps = {
   heroes: Hero[];

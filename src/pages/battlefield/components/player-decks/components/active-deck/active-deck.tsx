@@ -1,9 +1,8 @@
 import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 import styles from "./active-deck.module.css";
-import Card from "../../../card/card";
-
-import type { OnClickCardPayload } from "../../../card/card.interface";
+import { OnClickCardPayload } from "@/components/hero-card/card.interface";
+import Card from "@/components/hero-card/card";
 
 type ActiveDeckProps = {
   heroes: Hero[];

@@ -1,4 +1,4 @@
-import InvertedCard from "../../../inverted-card/inverted-card";
+import InvertedCard from "../../../../../../components/inverted-card/inverted-card";
 import styles from "./selection-deck.module.css";
 
 type SelectionDeckDeckProps = {

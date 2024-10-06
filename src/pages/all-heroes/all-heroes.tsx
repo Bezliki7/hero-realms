@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import apiClient from "@/api/api-client";
 import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
-import Card from "../battlefield/components/card/card";
+import Card from "@/components/hero-card/card";
 
 const AllHeroes = () => {
   const [heroes, setHeroes] = useState<Hero[]>();

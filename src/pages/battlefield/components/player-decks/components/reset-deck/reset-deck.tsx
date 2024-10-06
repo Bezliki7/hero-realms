@@ -1,6 +1,6 @@
 import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
-import InvertedCard from "../../../inverted-card/inverted-card";
+import InvertedCard from "../../../../../../components/inverted-card/inverted-card";
 import styles from "./reset-deck.module.css";
 
 type ResetDeckDeckProps = {

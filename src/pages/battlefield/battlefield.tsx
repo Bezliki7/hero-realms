@@ -3,14 +3,15 @@ import { useRef, useState } from "react";
 import apiClient from "@/api/api-client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/loader/loader";
+
+import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
 import TradingRow from "./components/trading-row/trading-row";
 import PlayerDecks from "./components/player-decks/player-decks";
 import DefendersRow from "./components/defenders-row-modal/defenders-row-modal";
 import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
-
-import type { OnClickCardPayload } from "./components/card/card.interface";
 import SupportsRowModal from "./components/supports-row-modal/supports-row-modal";
 
 const Battlefield = () => {
@@ -81,7 +82,7 @@ const Battlefield = () => {
   };
 
   if (!battlefield.heroes.length) {
-    return "loading...";
+    return <Loader />;
   }
 
   return (
