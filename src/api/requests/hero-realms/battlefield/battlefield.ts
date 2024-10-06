@@ -28,6 +28,15 @@ class BattlefieldService {
   public getBattlefields(config?: AxiosRequestConfig) {
     return api.get<Battlefield[]>(URLS.BATTLEFIELD.GET_BATTLEFIELDS, config);
   }
+
+  public clearBattleFiled(id: number, config?: AxiosRequestConfig) {
+    const normalizedUri = URLS.BATTLEFIELD.CLEAR_BATTLEFIELD.replace(
+      "$1",
+      id.toString()
+    );
+
+    return api.put(normalizedUri, undefined, config);
+  }
 }
 
 export default BattlefieldService;

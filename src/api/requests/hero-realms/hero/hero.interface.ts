@@ -5,6 +5,7 @@ export type Hero = {
   fraction: string;
   price: number;
   isGuardian: boolean;
+  playerId?: number;
   protection?: number;
   placement?: HeroPlacement;
   battlefieldId?: number;
@@ -27,6 +28,7 @@ export type HeroPlacement =
   | "trading-deck"
   | "trading-row"
   | "defenders-row"
+  | "supports-row";
 
 export type Action = {
   id: number;

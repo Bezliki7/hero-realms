@@ -1,4 +1,4 @@
-import { ActionCondition } from "./hero.interface";
+import type { ActionCondition } from "./hero.interface";
 
 export const ACTION_CONDITION = {
   SACRIFICE: "sacrifice",
@@ -23,4 +23,5 @@ export const HERO_PLACEMENT = {
   TRADING_DECK: "trading-deck",
   TRADING_ROW: "trading-row",
   DEFENDERS_ROW: "defenders-row",
+  SUPPORTS_ROW: "supports-row",
 } as const;

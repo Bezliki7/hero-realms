@@ -11,11 +11,13 @@ import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
 
 import type { OnClickCardPayload } from "./components/card/card.interface";
+import SupportsRowModal from "./components/supports-row-modal/supports-row-modal";
 
 const Battlefield = () => {
   const clickedHeroId = useRef(0);
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
   const [isChooseModalOpen, setChooseModalOpen] = useState(false);
+  const [isSupportsModalOpen, setSupportsModalOpen] = useState(false);
 
   const { toast } = useToast();
   const { battlefield, player, opponentPlayer, wsService } =
@@ -24,6 +26,12 @@ const Battlefield = () => {
   const handleEndMove = async () => {
     if (player.currentTurnPlayer) {
       await apiClient.player.endPlayerMove(player.id);
+    }
+  };
+
+  const handleClearBattlefield = async () => {
+    if (battlefield.players.some((player) => !player.health)) {
+      await apiClient.battlefield.clearBattleFiled(battlefield.id);
     }
   };
 
@@ -72,6 +80,10 @@ const Battlefield = () => {
     }
   };
 
+  if (!battlefield.heroes.length) {
+    return "loading...";
+  }
+
   return (
     <div className="overflow-y-hidden">
       {battlefield.players.map((player) => (
@@ -94,7 +106,11 @@ const Battlefield = () => {
       </div>
 
       <div className="flex items-center">
-        <TradingRow heroes={battlefield?.heroes ?? []} player={player} />
+        <TradingRow
+          heroes={battlefield?.heroes ?? []}
+          player={player}
+          setSupportsModalOpen={setSupportsModalOpen}
+        />
       </div>
 
       <PlayerDecks
@@ -123,7 +139,14 @@ const Battlefield = () => {
           onCloseModal={() => setChooseModalOpen(false)}
         />
       )}
-    </>
+
+      {isSupportsModalOpen && (
+        <SupportsRowModal
+          heroes={battlefield.heroes}
+          onClose={() => setSupportsModalOpen(false)}
+        />
+      )}
+
       {isDefendersModalOpen && (
         <DefendersRow
           currentPlayer={player}
