@@ -13,6 +13,7 @@ import DefendersRow from "./components/defenders-row-modal/defenders-row-modal";
 import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
 import SupportsRowModal from "./components/supports-row-modal/supports-row-modal";
+import { useStore } from "./hooks/use-store";
 
 const Battlefield = () => {
   const clickedHeroId = useRef(0);
@@ -20,6 +21,8 @@ const Battlefield = () => {
   const [isChooseModalOpen, setChooseModalOpen] = useState(false);
   const [isSupportsModalOpen, setSupportsModalOpen] = useState(false);
 
+  const store = useStore("heroes");
+  console.log(store);
   const { toast } = useToast();
   const { battlefield, player, opponentPlayer, wsService } =
     useBattlefieldState(() => setChooseModalOpen(true));
