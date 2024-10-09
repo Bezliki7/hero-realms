@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { Data, store } from "../store/store.instance";
+import { MyData, store } from "../store/store.instance";
 
-export const useStore = (key: keyof Data) =>
+export const useStore = (key: keyof MyData) =>
   useSyncExternalStore(() => store.subscribe(key), store.getSnapshot);

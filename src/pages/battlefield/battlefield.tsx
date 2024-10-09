@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import apiClient from "@/api/api-client";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
 import SupportsRowModal from "./components/supports-row-modal/supports-row-modal";
 import { useStore } from "./hooks/use-store";
+import { fetchSmth } from "./store/store.instance";
 
 const Battlefield = () => {
   const clickedHeroId = useRef(0);
@@ -21,8 +22,25 @@ const Battlefield = () => {
   const [isChooseModalOpen, setChooseModalOpen] = useState(false);
   const [isSupportsModalOpen, setSupportsModalOpen] = useState(false);
 
-  const store = useStore("heroes");
-  console.log(store);
+  const store = useStore("players");
+  console.log("@", store);
+
+  useEffect(() => {
+    const f = async () => {
+      await new Promise<void>((res) => {
+        setTimeout(() => {
+          fetchSmth();
+          res();
+        }, 1000);
+      });
+    };
+    f();
+  }, []);
+
+  useEffect(() => {
+    console.log("updated");
+  }, [store.players]);
+
   const { toast } = useToast();
   const { battlefield, player, opponentPlayer, wsService } =
     useBattlefieldState(() => setChooseModalOpen(true));
@@ -90,6 +108,10 @@ const Battlefield = () => {
 
   return (
     <div className="overflow-y-hidden">
+      {store.players.map((p, i) => (
+        <div key={i}>{p}</div>
+      ))}
+
       {battlefield.players.map((player) => (
         <div key={player.id}>
           {player.name}
