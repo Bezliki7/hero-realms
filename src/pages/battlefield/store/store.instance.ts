@@ -1,61 +1,81 @@
-// type Listeners = { [type: string]: Map<string, VoidFunction> };
-type Listeners = Record<string, VoidFunction[]>;
+import type { Listeners, StoreState } from "./store.interface";
 
-export type MyData = {
-  players: string[];
-  heroes: [];
+let data: StoreState = {
+  heroes: [],
+  players: [],
 };
+const listeners: Listeners = {} as Listeners;
+class StoreInstance<Data extends Record<string, unknown>> {
+  public data: StoreState = {
+    heroes: [],
+    players: [],
+  } as StoreState;
 
-const myData: MyData = { players: [], heroes: [] };
-
-const listeners: Listeners = {};
-
-const subscribe = (key: string | number, listener: VoidFunction) => {
-  if (!listeners[key]) {
-    listeners[key] = [];
+  constructor(initialData: StoreState) {
+    console.log("initial", initialData);
+    this.data = initialData;
   }
-  listeners[key].push(listener);
-  console.log("newSub", listeners);
-  return () => {
-    listeners[key] = listeners[key].filter((l) => l !== listener);
+
+  public _subscribe(
+    newListener: VoidFunction,
+    key: Extract<keyof Data, string>
+  ) {
+    if (!listeners[key]) {
+      listeners[key] = [];
+    }
+    listeners[key].push(newListener);
+    console.log("listeners", listeners);
+    return () => {
+      listeners[key] = listeners[key].filter(
+        (listener) => listener !== newListener
+      );
+    };
+  }
+
+  public _getSnapshot = () => {
+    return this.data;
   };
-};
 
-const emitChange = (type: keyof MyData | string) => {
-  if (!listeners[type]) {
-    throw new Error("none exist listener type");
+  public setData(udaptedData: Partial<Data>) {
+    this.data = { ...data, ...udaptedData };
+
+    const updatedDataKeys = Object.keys(udaptedData);
+
+    updatedDataKeys.forEach((key) =>
+      this.emitChange(key as Extract<keyof StoreState, string>)
+    );
   }
-  console.log(`Emitting change for: ${type}`);
-  for (const l of listeners[type]) {
-    l();
+
+  public emitChange(key: Extract<keyof StoreState, string>) {
+    if (!listeners[key]) {
+      throw new Error("none exist listener key");
+    }
+
+    listeners[key].forEach((listener) => listener());
   }
-};
 
-export const createStore = <Data extends Record<string, unknown>>(
-  data: Data
-) => {
-  return {
-    subscribe: (key: keyof Data) =>
-      subscribe(key as string, () => {
-        console.log("listen", key);
-      }),
+  public init = () => {
+    const players = [
+      {
+        battlefieldId: 1,
+        currentDamageCount: 0,
+        currentGoldCount: 0,
+        currentTurnPlayer: true,
+        health: 50,
+        heroes: [],
+        id: 1,
+        name: "ss",
+      },
+    ];
+    this.data = { ...this.data, players };
 
-    getSnapshot: () => {
-      return data;
-    },
-    setData: (udaptedData: Partial<Data>) => {
-      const newData = { ...data, ...udaptedData };
-      data = newData;
-      Object.keys(udaptedData).forEach((key) => emitChange(key));
-    },
+    this.emitChange("players");
   };
+}
+
+const initialData: StoreState = {
+  heroes: [],
+  players: [],
 };
 
-export const store = createStore<MyData>(myData);
-
-export const fetchSmth = () => {
-  console.log("11");
-  const newplayers = ["player1", "player2"];
-
-  store.setData({ players: newplayers });
-};
+export default new StoreInstance(data);

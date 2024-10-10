@@ -14,7 +14,6 @@ import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
 import SupportsRowModal from "./components/supports-row-modal/supports-row-modal";
 import { useStore } from "./hooks/use-store";
-import { fetchSmth } from "./store/store.instance";
 
 const Battlefield = () => {
   const clickedHeroId = useRef(0);
@@ -24,12 +23,11 @@ const Battlefield = () => {
 
   const store = useStore("players");
   console.log("@", store);
-
   useEffect(() => {
     const f = async () => {
       await new Promise<void>((res) => {
         setTimeout(() => {
-          fetchSmth();
+          store.init();
           res();
         }, 1000);
       });
@@ -109,7 +107,7 @@ const Battlefield = () => {
   return (
     <div className="overflow-y-hidden">
       {store.players.map((p, i) => (
-        <div key={i}>{p}</div>
+        <div key={i}>{p.name}</div>
       ))}
 
       {battlefield.players.map((player) => (
