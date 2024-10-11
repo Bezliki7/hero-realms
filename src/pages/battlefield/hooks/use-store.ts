@@ -1,15 +1,15 @@
 import { useSyncExternalStore } from "react";
 
+import type { StoreState } from "../store/store.interface";
 import store from "../store/store";
 
-import type { StoreState } from "../store/store.interface";
-import storeInstance from "../store/store.instance";
+export const useStore = (key?: keyof StoreState) => {
+  const { storeInstance } = store;
 
-export const useStore = (key: keyof StoreState) => {
   const storeState = useSyncExternalStore(
     (listener) => storeInstance._subscribe(listener, key),
     storeInstance._getSnapshot
   );
 
-  return { ...storeState, ...{ init: () => storeInstance.init() } };
+  return { ...storeState, ...{ init: store.init } };
 };

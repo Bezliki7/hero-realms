@@ -6,11 +6,14 @@ import { usePlayer } from "@/hooks/use-player";
 import type { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
 
 import battlefieldWsService from "../services/battlefield.service";
+import { useStore } from "./use-store";
 
 export const useBattlefieldState = (openChooseModal: () => void) => {
   const { player, setPlayer } = usePlayer();
   const { battlefield, setBattlefield } = useBattlefield();
   const [isInit, setInit] = useState(false);
+
+  const store = useStore();
 
   const wsService = useMemo(
     () => new battlefieldWsService(player.id),
@@ -22,15 +25,17 @@ export const useBattlefieldState = (openChooseModal: () => void) => {
   )?.[0];
 
   const handleBattlefieldUpdate = (battlefield: Battlefield) => {
-    setBattlefield(battlefield);
+    // setBattlefield(battlefield);
 
-    const updatedPlayer = battlefield.players.find(
-      ({ id }) => id === player.id
-    );
+    store.init(battlefield.players, battlefield.heroes);
 
-    if (updatedPlayer) {
-      setPlayer(updatedPlayer);
-    }
+    // const updatedPlayer = battlefield.players.find(
+    //   ({ id }) => id === player.id
+    // );
+
+    // if (updatedPlayer) {
+    //   setPlayer(updatedPlayer);
+    // }
   };
 
   useEffect(() => {

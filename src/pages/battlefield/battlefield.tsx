@@ -22,26 +22,13 @@ const Battlefield = () => {
   const [isSupportsModalOpen, setSupportsModalOpen] = useState(false);
 
   const store = useStore("players");
-  console.log("@", store);
-  useEffect(() => {
-    const f = async () => {
-      await new Promise<void>((res) => {
-        setTimeout(() => {
-          store.init();
-          res();
-        }, 1000);
-      });
-    };
-    f();
-  }, []);
-
-  useEffect(() => {
-    console.log("updated");
-  }, [store.players]);
-
   const { toast } = useToast();
   const { battlefield, player, opponentPlayer, wsService } =
     useBattlefieldState(() => setChooseModalOpen(true));
+
+  useEffect(() => {
+    store.init(battlefield.players, battlefield.heroes);
+  }, []);
 
   const handleEndMove = async () => {
     if (player.currentTurnPlayer) {
@@ -100,15 +87,23 @@ const Battlefield = () => {
     }
   };
 
-  if (!battlefield.heroes.length) {
+  if (!store.heroes.length) {
     return <Loader />;
   }
 
   return (
     <div className="overflow-y-hidden">
       {store.players.map((p, i) => (
-        <div key={i}>{p.name}</div>
+        <div key={i}>
+          {p.name}
+          {p.currentTurnPlayer && " сейчас ходит"} - {p.health}hp,
+          {p.currentGoldCount}gold, {p.currentDamageCount}dmg
+        </div>
       ))}
+
+      {/* {store.heroes.map((p, i) => (
+        <div key={i}>Hero {p.name}</div>
+      ))} */}
 
       {battlefield.players.map((player) => (
         <div key={player.id}>
@@ -117,6 +112,8 @@ const Battlefield = () => {
           {player.currentGoldCount}gold, {player.currentDamageCount}dmg
         </div>
       ))}
+
+      <Button onClick={handleAttackOpponent}>Add</Button>
 
       <div className="flex p-2 gap-8">
         <Button onClick={() => setDefendersModalOpen(true)}>Защитники</Button>
@@ -131,7 +128,7 @@ const Battlefield = () => {
 
       <div className="flex items-center">
         <TradingRow
-          heroes={battlefield?.heroes ?? []}
+          heroes={store.heroes ?? []}
           player={player}
           setSupportsModalOpen={setSupportsModalOpen}
         />
