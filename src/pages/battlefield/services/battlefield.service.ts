@@ -4,20 +4,18 @@ import type { Battlefield } from "@/api/requests/hero-realms/battlefield/battlef
 
 import { CLIENT_MESSAGES, WS_URL } from "./battlefield.constant";
 
-class battlefieldWsService {
+export class WsService {
   public socket: Socket;
 
-  constructor(playerId: number) {
+  constructor() {
     this.socket = io(WS_URL, {
       transports: ["websocket"],
       autoConnect: false,
-      auth: {
-        userId: playerId,
-      },
     });
   }
 
-  public connect() {
+  public connect(userId?: number) {
+    this.socket.auth = { userId };
     this.socket.connect();
   }
 
@@ -51,5 +49,3 @@ class battlefieldWsService {
     this.socket.on(CLIENT_MESSAGES.NEED_TO_RESET_CARD, callback);
   }
 }
-
-export default battlefieldWsService;

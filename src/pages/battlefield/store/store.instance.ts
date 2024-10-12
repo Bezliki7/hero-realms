@@ -11,20 +11,27 @@ export class StoreInstance<Data extends Record<string, unknown>> {
 
   public _subscribe(
     newListener: VoidFunction,
-    key?: Extract<keyof Data, string>
+    keys?: Extract<keyof Data, string> | Extract<keyof Data, string>[]
   ) {
-    if (key) {
+    const keysList = typeof keys === "object" ? keys : [keys];
+    const filteredKeys = keysList.filter((key) => key !== undefined);
+
+    for (const key of filteredKeys) {
       if (!this.listeners[key]) {
         this.listeners[key] = [];
       }
       this.listeners[key].push(newListener);
     }
 
+    const remove = (key: string) => {
+      this.listeners[key] = this.listeners[key].filter(
+        (listener) => listener !== newListener
+      );
+    };
+
     return () => {
-      if (key) {
-        this.listeners[key] = this.listeners[key].filter(
-          (listener) => listener !== newListener
-        );
+      for (const key of filteredKeys) {
+        remove(key);
       }
     };
   }

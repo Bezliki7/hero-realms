@@ -3,7 +3,7 @@ import { useSyncExternalStore } from "react";
 import type { StoreState } from "../store/store.interface";
 import store from "../store/store";
 
-export const useStore = (key?: keyof StoreState) => {
+export const useStore = (key?: keyof StoreState | (keyof StoreState)[]) => {
   const { storeInstance } = store;
 
   const storeState = useSyncExternalStore(

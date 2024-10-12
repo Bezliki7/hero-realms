@@ -27,7 +27,7 @@ const Battlefield = () => {
     useBattlefieldState(() => setChooseModalOpen(true));
 
   useEffect(() => {
-    store.init(battlefield.players, battlefield.heroes);
+    store.init(battlefield, player.id);
   }, []);
 
   const handleEndMove = async () => {
@@ -112,8 +112,6 @@ const Battlefield = () => {
           {player.currentGoldCount}gold, {player.currentDamageCount}dmg
         </div>
       ))}
-
-      <Button onClick={handleAttackOpponent}>Add</Button>
 
       <div className="flex p-2 gap-8">
         <Button onClick={() => setDefendersModalOpen(true)}>Защитники</Button>
