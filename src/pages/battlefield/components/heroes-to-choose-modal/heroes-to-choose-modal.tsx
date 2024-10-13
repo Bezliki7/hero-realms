@@ -8,14 +8,13 @@ import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
 import styles from "./heroes-to-choose-modal.module.css";
+import { useStore } from "../../hooks/use-store";
 
 type HeroesToChooseModalProps = {
   heroes: Hero[];
   oponentsHeroes: Hero[];
   clickedHeroId: number;
   onClickCard: (payload: OnClickCardPayload) => void;
-  resetCardByOpponent: (cardId: number) => void;
-  onCloseModal: () => void;
 };
 
 const HeroesToChooseModal = ({
@@ -23,9 +22,9 @@ const HeroesToChooseModal = ({
   oponentsHeroes,
   clickedHeroId,
   onClickCard,
-  resetCardByOpponent,
-  onCloseModal,
 }: HeroesToChooseModalProps) => {
+  const store = useStore();
+
   const onChoose = (payload: OnClickCardPayload) => {
     if (clickedHeroId) {
       onClickCard({
@@ -33,8 +32,8 @@ const HeroesToChooseModal = ({
         heroIdForAction: payload.id,
       });
     } else {
-      resetCardByOpponent(payload.id);
-      onCloseModal();
+      store.wsService.resetCard(payload.id);
+      store.setData({ isChooseModalOpen: false });
     }
   };
 
@@ -102,7 +101,7 @@ const HeroesToChooseModal = ({
   }, [filteredHeroes.length]);
 
   return (
-    <div onClick={onCloseModal}>
+    <div onClick={() => store.setData({ isChooseModalOpen: false })}>
       {filteredHeroes.length ? (
         <Modal zIndex={100}>
           <div>

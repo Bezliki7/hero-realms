@@ -5,6 +5,7 @@ export type StoreState = {
   players: Player[];
   heroes: Hero[];
   currentPlayerId: number;
+  isChooseModalOpen: boolean;
 };
 
 export type Listeners = Record<string, VoidFunction[]>;

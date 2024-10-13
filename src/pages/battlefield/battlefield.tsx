@@ -4,6 +4,8 @@ import apiClient from "@/api/api-client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import Loader from "@/components/loader/loader";
+import { useBattlefield } from "@/hooks/use-battlefield";
+import { usePlayer } from "@/hooks/use-player";
 
 import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
@@ -14,33 +16,23 @@ import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import HeroesToChooseModal from "./components/heroes-to-choose-modal/heroes-to-choose-modal";
 import SupportsRowModal from "./components/supports-row-modal/supports-row-modal";
 import { useStore } from "./hooks/use-store";
+import Footer from "./components/footer/footer";
 
 const Battlefield = () => {
   const clickedHeroId = useRef(0);
   const [isDefendersModalOpen, setDefendersModalOpen] = useState(false);
-  const [isChooseModalOpen, setChooseModalOpen] = useState(false);
   const [isSupportsModalOpen, setSupportsModalOpen] = useState(false);
 
-  const store = useStore("players");
+  const store = useStore(["players"]);
   const { toast } = useToast();
-  const { battlefield, player, opponentPlayer, wsService } =
-    useBattlefieldState(() => setChooseModalOpen(true));
+  const { player } = usePlayer();
+  const { battlefield } = useBattlefield();
+  const { opponentPlayer } = useBattlefieldState();
 
   useEffect(() => {
     store.init(battlefield, player.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleEndMove = async () => {
-    if (player.currentTurnPlayer) {
-      await apiClient.player.endPlayerMove(player.id);
-    }
-  };
-
-  const handleClearBattlefield = async () => {
-    if (battlefield.players.some((player) => !player.health)) {
-      await apiClient.battlefield.clearBattleFiled(battlefield.id);
-    }
-  };
 
   const handleAttackOpponent = async () => {
     if (player.currentDamageCount && opponentPlayer) {
@@ -58,7 +50,6 @@ const Battlefield = () => {
   };
 
   const handleClickCard = async (payload: OnClickCardPayload) => {
-    console.log(player);
     if (!player.currentTurnPlayer) {
       toast({
         title: "Ошибка",
@@ -66,25 +57,10 @@ const Battlefield = () => {
       });
       return;
     }
-    console.log(payload);
-    if (
-      !payload.needHeroForAction &&
-      (!payload.checkedOptionalActions?.length || payload.heroIdForAction)
-    ) {
-      await apiClient.hero.useHeroActions({
-        heroId: payload.id,
-        playerId: player.id,
-        choiceActionId: payload.choiceActionId,
-        heroIdForAction: payload.heroIdForAction,
-      });
-      setChooseModalOpen(false);
+
+    await store.useHeroActions(payload, () => {
       clickedHeroId.current = 0;
-    } else if (
-      payload.needHeroForAction ||
-      payload.checkedOptionalActions?.length
-    ) {
-      setChooseModalOpen(true);
-    }
+    });
   };
 
   if (!store.heroes.length) {
@@ -92,20 +68,8 @@ const Battlefield = () => {
   }
 
   return (
-    <div className="overflow-y-hidden">
-      {store.players.map((p, i) => (
-        <div key={i}>
-          {p.name}
-          {p.currentTurnPlayer && " сейчас ходит"} - {p.health}hp,
-          {p.currentGoldCount}gold, {p.currentDamageCount}dmg
-        </div>
-      ))}
-
-      {/* {store.heroes.map((p, i) => (
-        <div key={i}>Hero {p.name}</div>
-      ))} */}
-
-      {battlefield.players.map((player) => (
+    <div className="overflow-hidden">
+      {store.players.map((player) => (
         <div key={player.id}>
           {player.name}
           {player.currentTurnPlayer && " сейчас ходит"} - {player.health}hp,
@@ -126,36 +90,24 @@ const Battlefield = () => {
 
       <div className="flex items-center">
         <TradingRow
-          heroes={store.heroes ?? []}
           player={player}
           setSupportsModalOpen={setSupportsModalOpen}
         />
       </div>
 
       <PlayerDecks
-        player={player}
         clickedHeroId={clickedHeroId}
         onClickCard={handleClickCard}
       />
 
-      <div style={{ marginTop: -120 }}>
-        {player.currentTurnPlayer && (
-          <Button onClick={handleEndMove}>Закончить ход</Button>
-        )}
+      <Footer />
 
-        {battlefield.players.some((player) => !player.health) && (
-          <Button onClick={handleClearBattlefield}>Очистить поле битвы</Button>
-        )}
-      </div>
-
-      {isChooseModalOpen && (
+      {store.isChooseModalOpen && (
         <HeroesToChooseModal
           heroes={player.heroes}
           oponentsHeroes={opponentPlayer.heroes}
           clickedHeroId={clickedHeroId.current}
           onClickCard={handleClickCard}
-          resetCardByOpponent={(id: number) => wsService.resetCard(id)}
-          onCloseModal={() => setChooseModalOpen(false)}
         />
       )}
 

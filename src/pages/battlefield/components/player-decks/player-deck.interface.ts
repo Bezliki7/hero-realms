@@ -1,9 +1,6 @@
-import type { Player } from "@/api/requests/hero-realms/player/player.interface";
-
-import type { OnClickCardPayload } from "../card/card.interface";
+import { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
 export type PlayerDecksProps = {
-  player: Player;
   clickedHeroId: React.MutableRefObject<number>;
   onClickCard: (payload: OnClickCardPayload) => void;
 };

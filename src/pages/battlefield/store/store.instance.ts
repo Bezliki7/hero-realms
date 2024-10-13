@@ -11,7 +11,11 @@ export class StoreInstance<Data extends Record<string, unknown>> {
 
   public _subscribe(
     newListener: VoidFunction,
-    keys?: Extract<keyof Data, string> | Extract<keyof Data, string>[]
+    keys?:
+      | Extract<keyof Data, string>
+      | Extract<keyof Data, string>[]
+      | string
+      | string[]
   ) {
     const keysList = typeof keys === "object" ? keys : [keys];
     const filteredKeys = keysList.filter((key) => key !== undefined);
@@ -55,8 +59,9 @@ export class StoreInstance<Data extends Record<string, unknown>> {
     }
   }
 
-  public emitChange(key: Extract<keyof StoreState, string>) {
+  public emitChange(key: Extract<keyof StoreState, string> | string) {
     if (this.listeners[key]) {
+      console.log(key);
       this.listeners[key].forEach((listener) => listener());
     }
   }

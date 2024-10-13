@@ -4,22 +4,19 @@ import Card from "@/components/hero-card/card";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
 import type { Player } from "@/api/requests/hero-realms/player/player.interface";
-import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 import InvertedCard from "../../../../components/inverted-card/inverted-card";
 import styles from "./trading-row.module.css";
+import { useStore } from "../../hooks/use-store";
 
 type TradingRowProps = {
-  heroes: Hero[];
   player?: Player;
   setSupportsModalOpen: (value: boolean) => void;
 };
 
-const TradingRow = ({
-  heroes,
-  player,
-  setSupportsModalOpen,
-}: TradingRowProps) => {
+const TradingRow = ({ player, setSupportsModalOpen }: TradingRowProps) => {
+  const { heroes } = useStore();
+
   const { toast } = useToast();
 
   const baseHeroes = heroes.filter(
