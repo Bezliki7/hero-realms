@@ -8,13 +8,14 @@ import Card from "@/components/hero-card/card";
 import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 import styles from "./supports-row-modal.module.css";
+import { useStore } from "../../hooks/use-store";
 
 type SupportsRowModalProps = {
   heroes: Hero[];
-  onClose: VoidFunction;
 };
 
-const SupportsRowModal = ({ heroes, onClose }: SupportsRowModalProps) => {
+const SupportsRowModal = ({ heroes }: SupportsRowModalProps) => {
+  const store = useStore();
   const { player } = usePlayer();
   const { toast } = useToast();
 
@@ -40,7 +41,7 @@ const SupportsRowModal = ({ heroes, onClose }: SupportsRowModalProps) => {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={() => store.setData({ isSupportsModalOpen: false })}>
       <div className={styles.modalContainer}>
         <div className={styles.cards}>
           {supportHeroes.map((hero) => (

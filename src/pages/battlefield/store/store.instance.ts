@@ -44,10 +44,10 @@ export class StoreInstance<Data extends Record<string, unknown>> {
     return this.state;
   };
 
-  public setData(
+  public setData = (
     udaptedData: Partial<Data>,
     emitAllUpdatedData: boolean = true
-  ) {
+  ) => {
     this.state = { ...this.state, ...udaptedData };
 
     if (emitAllUpdatedData) {
@@ -57,7 +57,7 @@ export class StoreInstance<Data extends Record<string, unknown>> {
         this.emitChange(key as Extract<keyof StoreState, string>)
       );
     }
-  }
+  };
 
   public emitChange(key: Extract<keyof StoreState, string> | string) {
     if (this.listeners[key]) {

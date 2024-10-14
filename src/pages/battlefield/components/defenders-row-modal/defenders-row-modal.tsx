@@ -6,13 +6,13 @@ import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/hooks/use-toast";
 import Card from "@/components/hero-card/card";
 import { OnClickCardPayload } from "@/components/hero-card/card.interface";
+import { useStore } from "../../hooks/use-store";
 
 type DefendersRow = {
   currentPlayer: Player;
   opponentPlayer: Player;
   clickedHeroId: React.MutableRefObject<number>;
   onClickCard: (payload: OnClickCardPayload) => void;
-  onClose: VoidFunction;
 };
 
 const DefendersRow = ({
@@ -20,8 +20,8 @@ const DefendersRow = ({
   opponentPlayer,
   clickedHeroId,
   onClickCard,
-  onClose,
 }: DefendersRow) => {
+  const store = useStore();
   const { toast } = useToast();
 
   const handleAttackOpponentsCard = async (heroId: number) => {
@@ -49,7 +49,7 @@ const DefendersRow = ({
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={() => store.setData({ isDefendersModalOpen: false })}>
       <div className={styles.modalContainer}>
         {opponentPlayerPlayerDefenders.length ? (
           <div className={styles.cards}>

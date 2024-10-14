@@ -14,20 +14,18 @@ type HeroesToChooseModalProps = {
   heroes: Hero[];
   oponentsHeroes: Hero[];
   clickedHeroId: number;
-  onClickCard: (payload: OnClickCardPayload) => void;
 };
 
 const HeroesToChooseModal = ({
   heroes,
   oponentsHeroes,
   clickedHeroId,
-  onClickCard,
 }: HeroesToChooseModalProps) => {
   const store = useStore();
 
   const onChoose = (payload: OnClickCardPayload) => {
     if (clickedHeroId) {
-      onClickCard({
+      store.useHeroActions({
         id: clickedHeroId,
         heroIdForAction: payload.id,
       });
@@ -95,7 +93,7 @@ const HeroesToChooseModal = ({
 
   useEffect(() => {
     if (!filteredHeroes.length) {
-      onClickCard({ id: clickedHeroId });
+      store.useHeroActions({ id: clickedHeroId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredHeroes.length]);

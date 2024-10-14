@@ -74,7 +74,7 @@ class Store {
       },
       false
     );
-    // this.storeInstance.emitChange("players");
+    this.storeInstance.emitChange("players");
     this.storeInstance.emitChange("player");
   };
 
@@ -129,6 +129,8 @@ const initialData: StoreState = {
   heroes: [],
   currentPlayerId: 0,
   isChooseModalOpen: false,
+  isDefendersModalOpen: false,
+  isSupportsModalOpen: false,
 };
 
 const storeInstance = new StoreInstance(initialData);

@@ -11,7 +11,7 @@ type ActiveDeckProps = {
 };
 
 const ActiveDeck = ({ clickedHeroId, onClickCard }: ActiveDeckProps) => {
-  const { playerActiveDeck: heroes } = useStore();
+  const { playerActiveDeck: heroes } = useStore("player");
   const sortedHeroes = heroes.sort((a, b) => a.name.localeCompare(b.name));
 
   return (

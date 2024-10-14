@@ -11,19 +11,18 @@ import { useStore } from "../../hooks/use-store";
 
 type TradingRowProps = {
   player?: Player;
-  setSupportsModalOpen: (value: boolean) => void;
 };
 
-const TradingRow = ({ player, setSupportsModalOpen }: TradingRowProps) => {
-  const { heroes } = useStore();
+const TradingRow = ({ player }: TradingRowProps) => {
+  const store = useStore();
 
   const { toast } = useToast();
 
-  const baseHeroes = heroes.filter(
+  const baseHeroes = store.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.TRADING_ROW
   );
 
-  const [firstSupHero] = heroes.filter(
+  const [firstSupHero] = store.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.SUPPORTS_ROW
   );
 
@@ -42,11 +41,11 @@ const TradingRow = ({ player, setSupportsModalOpen }: TradingRowProps) => {
     }
   };
 
-  const tradingDeckCount = heroes.filter(
+  const tradingDeckCount = store.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.TRADING_DECK
   ).length;
 
-  const sacrificialDeckCount = heroes.filter(
+  const sacrificialDeckCount = store.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.SACRIFICIAL_DECK
   ).length;
 
@@ -66,7 +65,7 @@ const TradingRow = ({ player, setSupportsModalOpen }: TradingRowProps) => {
       <Card
         hero={firstSupHero}
         classname={styles.card}
-        onClick={() => setSupportsModalOpen(true)}
+        onClick={() => store.setData({ isSupportsModalOpen: true })}
       />
 
       <InvertedCard classname="h[380px] w-[250px]">

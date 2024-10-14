@@ -6,6 +6,8 @@ export type StoreState = {
   heroes: Hero[];
   currentPlayerId: number;
   isChooseModalOpen: boolean;
+  isDefendersModalOpen: boolean;
+  isSupportsModalOpen: boolean;
 };
 
 export type Listeners = Record<string, VoidFunction[]>;
