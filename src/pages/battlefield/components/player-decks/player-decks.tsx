@@ -4,11 +4,11 @@ import ActiveDeck from "./components/active-deck/active-deck";
 import SelectionDeck from "./components/selection-deck/selection-deck";
 import ResetDeck from "./components/reset-deck/reset-deck";
 import styles from "./player-decks.module.css";
-
-import type { PlayerDecksProps } from "./player-deck.interface";
 import { useStore } from "../../hooks/use-store";
 
-const PlayerDecks = ({ clickedHeroId, onClickCard }: PlayerDecksProps) => {
+import type { PlayerDecksProps } from "./player-deck.interface";
+
+const PlayerDecks = ({ clickedHeroId }: PlayerDecksProps) => {
   const { player } = useStore();
 
   const selectionDeckCount =
@@ -23,7 +23,7 @@ const PlayerDecks = ({ clickedHeroId, onClickCard }: PlayerDecksProps) => {
 
   return (
     <div className={styles.container}>
-      <ActiveDeck clickedHeroId={clickedHeroId} onClickCard={onClickCard} />
+      <ActiveDeck clickedHeroId={clickedHeroId} />
       <SelectionDeck selectionDeckCount={selectionDeckCount} />
       <ResetDeck heroes={resetDeck} />
     </div>

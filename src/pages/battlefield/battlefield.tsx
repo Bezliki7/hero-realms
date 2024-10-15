@@ -7,11 +7,8 @@ import Loader from "@/components/loader/loader";
 import { useBattlefield } from "@/hooks/use-battlefield";
 import { usePlayer } from "@/hooks/use-player";
 
-import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
-
 import TradingRow from "./components/trading-row/trading-row";
 import PlayerDecks from "./components/player-decks/player-decks";
-import { useBattlefieldState } from "./hooks/use-battlefield-state";
 import { useStore } from "./hooks/use-store";
 import Footer from "./components/footer/footer";
 import PlayersInfo from "./components/players-info/players-info";
@@ -24,7 +21,6 @@ const Battlefield = () => {
   const { toast } = useToast();
   const { player } = usePlayer();
   const { battlefield } = useBattlefield();
-  const { opponentPlayer } = useBattlefieldState();
 
   useEffect(() => {
     store.init(battlefield, player.id);
@@ -32,10 +28,10 @@ const Battlefield = () => {
   }, []);
 
   const handleAttackOpponent = async () => {
-    if (player.currentDamageCount && opponentPlayer) {
+    if (store.player?.currentDamageCount && store.opponentPlayer) {
       const res = await apiClient.player.attackPlayer({
-        attackingPlayerId: player?.id,
-        defendingPlayerId: opponentPlayer?.id,
+        attackingPlayerId: store.player?.id,
+        defendingPlayerId: store.opponentPlayer.id,
       });
       if (res.data) {
         toast({
@@ -44,20 +40,6 @@ const Battlefield = () => {
         });
       }
     }
-  };
-
-  const handleClickCard = async (payload: OnClickCardPayload) => {
-    if (!player.currentTurnPlayer) {
-      toast({
-        title: "Ошибка",
-        description: "Сейчас ход другого игрока",
-      });
-      return;
-    }
-
-    await store.useHeroActions(payload, () => {
-      clickedHeroId.current = 0;
-    });
   };
 
   if (!store.heroes.length) {
@@ -74,21 +56,16 @@ const Battlefield = () => {
         </Button>
 
         <Button
-          disabled={!player.currentDamageCount}
+          disabled={!store.player?.currentDamageCount}
           onClick={handleAttackOpponent}
         >
           Атаковать противника
         </Button>
       </div>
 
-      <div className="flex items-center">
-        <TradingRow player={player} />
-      </div>
+      <TradingRow />
 
-      <PlayerDecks
-        clickedHeroId={clickedHeroId}
-        onClickCard={handleClickCard}
-      />
+      <PlayerDecks clickedHeroId={clickedHeroId} />
 
       <Footer />
 

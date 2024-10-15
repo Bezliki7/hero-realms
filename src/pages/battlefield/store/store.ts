@@ -27,6 +27,10 @@ class Store {
     );
   }
 
+  public get opponentPlayer() {
+    return this.state.players.filter(({ id }) => id !== this.player?.id)?.[0];
+  }
+
   public get playerActiveDeck() {
     return this.state.heroes.filter(
       (hero) =>

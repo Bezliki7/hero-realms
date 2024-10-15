@@ -7,7 +7,6 @@ import { useStore } from "../../hooks/use-store";
 import HeroesToChooseModal from "../heroes-to-choose-modal/heroes-to-choose-modal";
 import SupportsRowModal from "../supports-row-modal/supports-row-modal";
 import DefendersRow from "../defenders-row-modal/defenders-row-modal";
-import { useBattlefieldState } from "../../hooks/use-battlefield-state";
 
 const Modals = ({
   clickedHeroId,
@@ -22,7 +21,6 @@ const Modals = ({
   const { toast } = useToast();
   const { player } = usePlayer();
   const { battlefield } = useBattlefield();
-  const { opponentPlayer } = useBattlefieldState();
 
   const handleClickCard = async (payload: OnClickCardPayload) => {
     if (!player.currentTurnPlayer) {
@@ -43,7 +41,7 @@ const Modals = ({
       {store.isChooseModalOpen && (
         <HeroesToChooseModal
           heroes={player.heroes}
-          oponentsHeroes={opponentPlayer.heroes}
+          oponentsHeroes={store.opponentPlayer.heroes}
           clickedHeroId={clickedHeroId.current}
         />
       )}
@@ -55,7 +53,7 @@ const Modals = ({
       {store.isDefendersModalOpen && (
         <DefendersRow
           currentPlayer={player}
-          opponentPlayer={opponentPlayer}
+          opponentPlayer={store.opponentPlayer}
           clickedHeroId={clickedHeroId}
           onClickCard={handleClickCard}
         />

@@ -4,15 +4,31 @@ import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
 import CardWrapper from "../../../card-wrapper/card-wrapper";
 import styles from "./active-deck.module.css";
+import { useToast } from "@/hooks/use-toast";
 
 type ActiveDeckProps = {
   clickedHeroId: React.MutableRefObject<number>;
-  onClickCard: (payload: OnClickCardPayload) => void;
 };
 
-const ActiveDeck = ({ clickedHeroId, onClickCard }: ActiveDeckProps) => {
-  const { playerActiveDeck: heroes } = useStore("player");
+const ActiveDeck = ({ clickedHeroId }: ActiveDeckProps) => {
+  const { playerActiveDeck: heroes, ...store } = useStore("player");
+  const { toast } = useToast();
+
   const sortedHeroes = heroes.sort((a, b) => a.name.localeCompare(b.name));
+
+  const handleUseCard = async (payload: OnClickCardPayload) => {
+    if (!store.player?.currentTurnPlayer) {
+      toast({
+        title: "Ошибка",
+        description: "Сейчас ход другого игрока",
+      });
+      return;
+    }
+
+    await store.useHeroActions(payload, () => {
+      clickedHeroId.current = 0;
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -23,7 +39,7 @@ const ActiveDeck = ({ clickedHeroId, onClickCard }: ActiveDeckProps) => {
           hero={hero}
           onClick={(payload) => {
             clickedHeroId.current = hero.id;
-            onClickCard(payload);
+            handleUseCard(payload);
           }}
         />
       ))}

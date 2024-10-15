@@ -1,11 +1,17 @@
 import { useSyncExternalStore } from "react";
 
-import type { StoreState } from "../store/store.interface";
 import store from "../store/store";
+
+import type { StoreState } from "../store/store.interface";
 
 type Store = Pick<
   typeof store,
-  "init" | "player" | "playerActiveDeck" | "useHeroActions" | "wsService"
+  | "init"
+  | "player"
+  | "playerActiveDeck"
+  | "useHeroActions"
+  | "wsService"
+  | "opponentPlayer"
 > & { setData: typeof store.storeInstance.setData } & StoreState;
 
 type UseStoreKey = {
@@ -27,6 +33,7 @@ export const useStore: UseStoreKey = (key) => {
     ...res,
     setData: storeInstance.setData,
     player: store.player,
+    opponentPlayer: store.opponentPlayer,
     playerActiveDeck: store.playerActiveDeck,
   } as const;
 };

@@ -21,7 +21,7 @@ const DefendersRow = ({
   clickedHeroId,
   onClickCard,
 }: DefendersRow) => {
-  const store = useStore();
+  const store = useStore("heroes");
   const { toast } = useToast();
 
   const handleAttackOpponentsCard = async (heroId: number) => {

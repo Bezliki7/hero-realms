@@ -3,18 +3,14 @@ import { useToast } from "@/hooks/use-toast";
 import Card from "@/components/hero-card/card";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 
-import type { Player } from "@/api/requests/hero-realms/player/player.interface";
-
 import InvertedCard from "../../../../components/inverted-card/inverted-card";
 import styles from "./trading-row.module.css";
 import { useStore } from "../../hooks/use-store";
 
-type TradingRowProps = {
-  player?: Player;
-};
+// type TradingRowProps = {};
 
-const TradingRow = ({ player }: TradingRowProps) => {
-  const store = useStore();
+const TradingRow = () => {
+  const store = useStore(["heroes", "player"]);
 
   const { toast } = useToast();
 
@@ -27,10 +23,10 @@ const TradingRow = ({ player }: TradingRowProps) => {
   );
 
   const hireHero = async (id: number) => {
-    if (player?.id) {
+    if (store.player?.id) {
       const res = await apiClient.hero.hireHero({
         heroId: id,
-        playerId: player?.id,
+        playerId: store.player?.id,
       });
 
       if (res.data) {
@@ -50,31 +46,33 @@ const TradingRow = ({ player }: TradingRowProps) => {
   ).length;
 
   return (
-    <div className={styles.container}>
-      {baseHeroes.map((hero) => {
-        return (
-          <Card
-            key={hero.id}
-            classname={styles.card}
-            hero={hero}
-            onClick={() => hireHero(hero.id)}
-          />
-        );
-      })}
+    <div className="flex items-center">
+      <div className={styles.container}>
+        {baseHeroes.map((hero) => {
+          return (
+            <Card
+              key={hero.id}
+              classname={styles.card}
+              hero={hero}
+              onClick={() => hireHero(hero.id)}
+            />
+          );
+        })}
 
-      <Card
-        hero={firstSupHero}
-        classname={styles.card}
-        onClick={() => store.setData({ isSupportsModalOpen: true })}
-      />
+        <Card
+          hero={firstSupHero}
+          classname={styles.card}
+          onClick={() => store.setData({ isSupportsModalOpen: true })}
+        />
 
-      <InvertedCard classname="h[380px] w-[250px]">
-        Рынок: {tradingDeckCount}
-      </InvertedCard>
+        <InvertedCard classname="h[380px] w-[250px]">
+          Рынок: {tradingDeckCount}
+        </InvertedCard>
 
-      <InvertedCard classname="h[380px] w-[250px]">
-        Жертвенная Колода: {sacrificialDeckCount}
-      </InvertedCard>
+        <InvertedCard classname="h[380px] w-[250px]">
+          Жертвенная Колода: {sacrificialDeckCount}
+        </InvertedCard>
+      </div>
     </div>
   );
 };
