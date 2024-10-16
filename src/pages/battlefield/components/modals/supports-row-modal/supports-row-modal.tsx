@@ -4,11 +4,11 @@ import { usePlayer } from "@/hooks/use-player";
 import { useToast } from "@/hooks/use-toast";
 import apiClient from "@/api/api-client";
 import Card from "@/components/hero-card/card";
+import { useStore } from "@/pages/battlefield/hooks/use-store";
 
-import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
+import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 import styles from "./supports-row-modal.module.css";
-import { useStore } from "../../hooks/use-store";
 
 type SupportsRowModalProps = {
   heroes: Hero[];

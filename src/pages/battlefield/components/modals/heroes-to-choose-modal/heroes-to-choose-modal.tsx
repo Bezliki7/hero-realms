@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import Card from "@/components/hero-card/card";
+import { useStore } from "@/pages/battlefield/hooks/use-store";
 
 import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
 import styles from "./heroes-to-choose-modal.module.css";
-import { useStore } from "../../hooks/use-store";
 
 type HeroesToChooseModalProps = {
   heroes: Hero[];

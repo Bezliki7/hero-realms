@@ -3,10 +3,11 @@ import { useBattlefield } from "@/hooks/use-battlefield";
 import { usePlayer } from "@/hooks/use-player";
 
 import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
+
 import { useStore } from "../../hooks/use-store";
-import HeroesToChooseModal from "../heroes-to-choose-modal/heroes-to-choose-modal";
-import SupportsRowModal from "../supports-row-modal/supports-row-modal";
-import DefendersRow from "../defenders-row-modal/defenders-row-modal";
+import HeroesToChooseModal from "./heroes-to-choose-modal/heroes-to-choose-modal";
+import SupportsRowModal from "./supports-row-modal/supports-row-modal";
+import DefendersRow from "./defenders-row-modal/defenders-row-modal";
 
 const Modals = ({
   clickedHeroId,

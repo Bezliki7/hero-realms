@@ -1,12 +1,14 @@
-import styles from "./defenders-row-modal.module.css";
-import { Player } from "@/api/requests/hero-realms/player/player.interface";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import apiClient from "@/api/api-client";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/hooks/use-toast";
 import Card from "@/components/hero-card/card";
-import { OnClickCardPayload } from "@/components/hero-card/card.interface";
-import { useStore } from "../../hooks/use-store";
+
+import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
+import type { Player } from "@/api/requests/hero-realms/player/player.interface";
+
+import { useStore } from "../../../hooks/use-store";
+import styles from "./defenders-row-modal.module.css";
 
 type DefendersRow = {
   currentPlayer: Player;
