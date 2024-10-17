@@ -11,25 +11,18 @@ import { useStore } from "../../../hooks/use-store";
 import styles from "./defenders-row-modal.module.css";
 
 type DefendersRow = {
-  currentPlayer: Player;
   opponentPlayer: Player;
   clickedHeroId: React.MutableRefObject<number>;
-  onClickCard: (payload: OnClickCardPayload) => void;
 };
 
-const DefendersRow = ({
-  currentPlayer,
-  opponentPlayer,
-  clickedHeroId,
-  onClickCard,
-}: DefendersRow) => {
-  const store = useStore("heroes");
+const DefendersRow = ({ opponentPlayer, clickedHeroId }: DefendersRow) => {
+  const store = useStore(["heroes", "player"]);
   const { toast } = useToast();
 
   const handleAttackOpponentsCard = async (heroId: number) => {
-    if (currentPlayer.currentDamageCount) {
+    if (store.player?.currentDamageCount) {
       const res = await apiClient.player.attackPlayer({
-        attackingPlayerId: currentPlayer.id,
+        attackingPlayerId: store.player.id,
         defendingPlayerId: opponentPlayer.id,
         heroIdToAttack: heroId,
       });
@@ -42,9 +35,24 @@ const DefendersRow = ({
     }
   };
 
-  const currentPlayerDefenders = currentPlayer.heroes
-    .filter((hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW)
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const handleClickCard = async (payload: OnClickCardPayload) => {
+    if (!store.player?.currentTurnPlayer) {
+      toast({
+        title: "Ошибка",
+        description: "Сейчас ход другого игрока",
+      });
+      return;
+    }
+
+    await store.useHeroActions(payload, () => {
+      clickedHeroId.current = 0;
+    });
+  };
+
+  const currentPlayerDefenders =
+    store.player?.heroes
+      .filter((hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW)
+      .sort((a, b) => a.name.localeCompare(b.name)) ?? [];
 
   const opponentPlayerPlayerDefenders = opponentPlayer.heroes
     .filter((hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW)
@@ -76,7 +84,7 @@ const DefendersRow = ({
                 hero={defender}
                 onClick={(payload) => {
                   clickedHeroId.current = defender.id;
-                  onClickCard(payload);
+                  handleClickCard(payload);
                 }}
               />
             ))}

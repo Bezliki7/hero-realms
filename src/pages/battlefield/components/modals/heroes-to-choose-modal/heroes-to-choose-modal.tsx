@@ -11,13 +11,11 @@ import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 import styles from "./heroes-to-choose-modal.module.css";
 
 type HeroesToChooseModalProps = {
-  heroes: Hero[];
   oponentsHeroes: Hero[];
   clickedHeroId: number;
 };
 
 const HeroesToChooseModal = ({
-  heroes,
   oponentsHeroes,
   clickedHeroId,
 }: HeroesToChooseModalProps) => {
@@ -35,7 +33,9 @@ const HeroesToChooseModal = ({
     }
   };
 
-  const clickedHeroBefore = heroes.find((hero) => hero.id === clickedHeroId);
+  const clickedHeroBefore = store.heroes.find(
+    (hero) => hero.id === clickedHeroId
+  );
 
   const heroWithResetCard = clickedHeroBefore?.actions.some(
     (action) => action.resetCard
@@ -53,7 +53,7 @@ const HeroesToChooseModal = ({
     (action) => action.stanOpponentsHero
   );
 
-  const filteredHeroes = heroes.filter((hero) => {
+  const filteredHeroes = store.playerHeroes.filter((hero) => {
     if (clickedHeroId === hero.id) {
       return false;
     }

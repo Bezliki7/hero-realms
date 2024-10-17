@@ -12,6 +12,8 @@ type Store = Pick<
   | "useHeroActions"
   | "wsService"
   | "opponentPlayer"
+  | "playerHeroes"
+  | "endPlayerMove"
 > & { setData: typeof store.storeInstance.setData } & StoreState;
 
 type UseStoreKey = {
@@ -31,7 +33,9 @@ export const useStore: UseStoreKey = (key) => {
   return {
     ...storeState,
     ...res,
+    endPlayerMove: store.endPlayerMove,
     setData: storeInstance.setData,
+    playerHeroes: store.playerHeroes,
     player: store.player,
     opponentPlayer: store.opponentPlayer,
     playerActiveDeck: store.playerActiveDeck,

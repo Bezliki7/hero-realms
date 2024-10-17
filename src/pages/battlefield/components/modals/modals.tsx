@@ -1,8 +1,4 @@
-import { useToast } from "@/hooks/use-toast";
 import { useBattlefield } from "@/hooks/use-battlefield";
-import { usePlayer } from "@/hooks/use-player";
-
-import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 
 import { useStore } from "../../hooks/use-store";
 import HeroesToChooseModal from "./heroes-to-choose-modal/heroes-to-choose-modal";
@@ -19,29 +15,12 @@ const Modals = ({
     "isDefendersModalOpen",
     "isSupportsModalOpen",
   ]);
-  const { toast } = useToast();
-  const { player } = usePlayer();
   const { battlefield } = useBattlefield();
-
-  const handleClickCard = async (payload: OnClickCardPayload) => {
-    if (!player.currentTurnPlayer) {
-      toast({
-        title: "Ошибка",
-        description: "Сейчас ход другого игрока",
-      });
-      return;
-    }
-
-    await store.useHeroActions(payload, () => {
-      clickedHeroId.current = 0;
-    });
-  };
 
   return (
     <>
       {store.isChooseModalOpen && (
         <HeroesToChooseModal
-          heroes={player.heroes}
           oponentsHeroes={store.opponentPlayer.heroes}
           clickedHeroId={clickedHeroId.current}
         />
@@ -53,10 +32,8 @@ const Modals = ({
 
       {store.isDefendersModalOpen && (
         <DefendersRow
-          currentPlayer={player}
           opponentPlayer={store.opponentPlayer}
           clickedHeroId={clickedHeroId}
-          onClickCard={handleClickCard}
         />
       )}
     </>

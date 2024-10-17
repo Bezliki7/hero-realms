@@ -7,20 +7,10 @@ import InvertedCard from "../../../../components/inverted-card/inverted-card";
 import styles from "./trading-row.module.css";
 import { useStore } from "../../hooks/use-store";
 
-// type TradingRowProps = {};
-
 const TradingRow = () => {
-  const store = useStore(["heroes", "player"]);
+  const store = useStore(["heroes"]);
 
   const { toast } = useToast();
-
-  const baseHeroes = store.heroes.filter(
-    (hero) => hero.placement === HERO_PLACEMENT.TRADING_ROW
-  );
-
-  const [firstSupHero] = store.heroes.filter(
-    (hero) => hero.placement === HERO_PLACEMENT.SUPPORTS_ROW
-  );
 
   const hireHero = async (id: number) => {
     if (store.player?.id) {
@@ -36,6 +26,14 @@ const TradingRow = () => {
       }
     }
   };
+
+  const baseHeroes = store.heroes.filter(
+    (hero) => hero.placement === HERO_PLACEMENT.TRADING_ROW
+  );
+
+  const [firstSupHero] = store.heroes.filter(
+    (hero) => hero.placement === HERO_PLACEMENT.SUPPORTS_ROW
+  );
 
   const tradingDeckCount = store.heroes.filter(
     (hero) => hero.placement === HERO_PLACEMENT.TRADING_DECK

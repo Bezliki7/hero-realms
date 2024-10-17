@@ -31,6 +31,12 @@ class Store {
     return this.state.players.filter(({ id }) => id !== this.player?.id)?.[0];
   }
 
+  public get playerHeroes() {
+    return this.state.heroes.filter(
+      (hero) => hero.playerId === this.player?.id
+    );
+  }
+
   public get playerActiveDeck() {
     return this.state.heroes.filter(
       (hero) =>
@@ -108,6 +114,13 @@ class Store {
       payload.checkedOptionalActions?.length
     ) {
       this.storeInstance.setData({ isChooseModalOpen: true });
+    }
+  };
+
+  public endPlayerMove = async () => {
+    if (this.player?.currentTurnPlayer) {
+      await apiClient.player.endPlayerMove(this.player.id);
+      this.storeInstance.emitChange("heroes");
     }
   };
 

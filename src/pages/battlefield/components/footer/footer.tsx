@@ -2,22 +2,18 @@ import apiClient from "@/api/api-client";
 import { Button } from "@/components/ui/button";
 
 import { useBattlefield } from "@/hooks/use-battlefield";
-import { usePlayer } from "@/hooks/use-player";
 import { useStore } from "../../hooks/use-store";
 
 const Footer = () => {
-  const store = useStore(["player"]);
-  const { player } = usePlayer();
+  const store = useStore(["players"]);
   const { battlefield } = useBattlefield();
 
   const handleEndMove = async () => {
-    if (player.currentTurnPlayer) {
-      await apiClient.player.endPlayerMove(player.id);
-    }
+    await store.endPlayerMove();
   };
 
   const handleClearBattlefield = async () => {
-    if (battlefield.players.some((player) => !player.health)) {
+    if (store.players.some((player) => !player.health)) {
       await apiClient.battlefield.clearBattleFiled(battlefield.id);
     }
   };
