@@ -55,6 +55,9 @@ class Store {
     this.wsService.connect(currentPlayerId);
 
     this.wsService.subscribeToUpdatedBattlefield(this.onBattledieldUpdated);
+    this.wsService.subscribeToNeedResetCard(() =>
+      this.storeInstance.setData({ isChooseModalOpen: true })
+    );
   };
 
   public onBattledieldUpdated = (battlefield: Battlefield) => {
