@@ -1,8 +1,5 @@
 import { useEffect, useRef } from "react";
 
-import apiClient from "@/api/api-client";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import Loader from "@/components/loader/loader";
 import { useBattlefield } from "@/hooks/use-battlefield";
 import { usePlayer } from "@/hooks/use-player";
@@ -18,7 +15,6 @@ const Battlefield = () => {
   const clickedHeroId = useRef(0);
 
   const store = useStore("heroes");
-  const { toast } = useToast();
   const { player } = usePlayer();
   const { battlefield } = useBattlefield();
 
@@ -27,21 +23,6 @@ const Battlefield = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAttackOpponent = async () => {
-    if (store.player?.currentDamageCount && store.opponentPlayer) {
-      const res = await apiClient.player.attackPlayer({
-        attackingPlayerId: store.player?.id,
-        defendingPlayerId: store.opponentPlayer.id,
-      });
-      if (res.data) {
-        toast({
-          title: "Ошибка",
-          description: res.data,
-        });
-      }
-    }
-  };
-
   if (!store.heroes.length) {
     return <Loader />;
   }
@@ -49,19 +30,6 @@ const Battlefield = () => {
   return (
     <div className="overflow-hidden">
       <PlayersInfo />
-
-      <div className="flex p-2 gap-8">
-        <Button onClick={() => store.setData({ isDefendersModalOpen: true })}>
-          Защитники
-        </Button>
-
-        <Button
-          disabled={!store.player?.currentDamageCount}
-          onClick={handleAttackOpponent}
-        >
-          Атаковать противника
-        </Button>
-      </div>
 
       <TradingRow />
 

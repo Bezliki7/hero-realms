@@ -128,6 +128,10 @@ class Store {
   };
 
   public isHeroUpdated(hero: Hero, newHero: Hero) {
+    if (!(hero && newHero)) {
+      return;
+    }
+
     const { actions, ...restHeroOpt } = hero;
     const { actions: newHeroActions, ...restNewHeroOpt } = newHero;
 
