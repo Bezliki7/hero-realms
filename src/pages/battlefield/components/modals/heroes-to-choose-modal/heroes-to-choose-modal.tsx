@@ -21,9 +21,9 @@ const HeroesToChooseModal = ({
 }: HeroesToChooseModalProps) => {
   const store = useStore();
 
-  const onChoose = (payload: OnClickCardPayload) => {
+  const onChoose = async (payload: OnClickCardPayload) => {
     if (clickedHeroId) {
-      store.useHeroActions({
+      await store.useHeroActions({
         id: clickedHeroId,
         heroIdForAction: payload.id,
       });
@@ -53,7 +53,7 @@ const HeroesToChooseModal = ({
     (action) => action.stanOpponentsHero
   );
 
-  const filteredHeroes = store.playerHeroes.filter((hero) => {
+  const filteredHeroesToChoose = store.heroes.filter((hero) => {
     if (clickedHeroId === hero.id) {
       return false;
     }
@@ -84,28 +84,34 @@ const HeroesToChooseModal = ({
   });
 
   if (heroWithStanOpponentsHero) {
-    filteredHeroes.length = 0;
+    filteredHeroesToChoose.length = 0;
     const opponentsHero = oponentsHeroes.filter(
       (hero) => hero.placement === HERO_PLACEMENT.DEFENDERS_ROW
     );
-    filteredHeroes.push(...opponentsHero);
+    filteredHeroesToChoose.push(...opponentsHero);
   }
 
   useEffect(() => {
-    if (!filteredHeroes.length) {
-      store.useHeroActions({ id: clickedHeroId });
+    if (!filteredHeroesToChoose.length) {
+      const stageEmptyAction = async () => {
+        console.log("stageEmptyAction");
+        await store.useHeroActions({ id: clickedHeroId });
+      };
+
+      stageEmptyAction();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredHeroes.length]);
+  }, [filteredHeroesToChoose.length]);
 
   return (
     <div onClick={() => store.setData({ isChooseModalOpen: false })}>
-      {filteredHeroes.length ? (
+      {filteredHeroesToChoose.length ? (
         <Modal zIndex={100}>
           <div>
             Выберите героя для действия
             <div className={styles.cards}>
-              {filteredHeroes.map((hero) => (
+              {filteredHeroesToChoose.map((hero) => (
                 <Card key={hero.id} hero={hero} onClick={onChoose} />
               ))}
             </div>

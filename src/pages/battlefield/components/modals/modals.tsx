@@ -31,10 +31,7 @@ const Modals = ({
       )}
 
       {store.isDefendersModalOpen && (
-        <DefendersRow
-          opponentPlayer={store.opponentPlayer}
-          clickedHeroId={clickedHeroId}
-        />
+        <DefendersRow clickedHeroId={clickedHeroId} />
       )}
     </>
   );

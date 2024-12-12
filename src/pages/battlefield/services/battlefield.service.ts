@@ -1,6 +1,8 @@
 import { io, Socket } from "socket.io-client";
 
 import type { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
+import type { Player } from "@/api/requests/hero-realms/player/player.interface";
+import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 import { CLIENT_MESSAGES, WS_URL } from "./battlefield.constant";
 
@@ -43,6 +45,14 @@ export class WsService {
     callback: (battlefield: Battlefield) => void
   ) {
     this.socket.on(CLIENT_MESSAGES.BATTLEFIELD_UPDATED, callback);
+  }
+
+  public subscribeToUpdatedPlayers(callback: (players: Player[]) => void) {
+    this.socket.on(CLIENT_MESSAGES.PLAYERS_UPDATED, callback);
+  }
+
+  public subscribeToUpdatedHero(callback: (hero: Hero) => void) {
+    this.socket.on(CLIENT_MESSAGES.HERO_UPDATED, callback);
   }
 
   public subscribeToNeedResetCard(callback: () => void) {

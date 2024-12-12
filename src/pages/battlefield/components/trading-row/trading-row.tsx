@@ -6,9 +6,10 @@ import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import InvertedCard from "../../../../components/inverted-card/inverted-card";
 import styles from "./trading-row.module.css";
 import { useStore } from "../../hooks/use-store";
+import CardWrapper from "../card-wrapper/card-wrapper";
 
 const TradingRow = () => {
-  const store = useStore(["heroes"]);
+  const store = useStore();
 
   const { toast } = useToast();
 
@@ -48,7 +49,7 @@ const TradingRow = () => {
       <div className={styles.container}>
         {baseHeroes.map((hero) => {
           return (
-            <Card
+            <CardWrapper
               key={hero.id}
               classname={styles.card}
               hero={hero}

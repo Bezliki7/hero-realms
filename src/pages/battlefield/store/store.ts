@@ -2,16 +2,18 @@ import isEqual from "lodash.isequal";
 
 import apiClient from "@/api/api-client";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
-import { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
-import { OnClickCardPayload } from "@/components/hero-card/card.interface";
+
+import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
+import type { OnClickCardPayload } from "@/components/hero-card/card.interface";
 import type { Battlefield } from "@/api/requests/hero-realms/battlefield/battlefield.interface";
+import type { Player } from "@/api/requests/hero-realms/player/player.interface";
 
 import { StoreInstance } from "./store.instance";
 import { WsService } from "../services/battlefield.service";
 
 import type { StoreState } from "./store.interface";
 
-class Store {
+class BaseStore {
   public get state() {
     return this.storeInstance.state;
   }
@@ -55,6 +57,8 @@ class Store {
     this.wsService.connect(currentPlayerId);
 
     this.wsService.subscribeToUpdatedBattlefield(this.onBattledieldUpdated);
+    this.wsService.subscribeToUpdatedPlayers(this.onPlayersUpdated);
+    this.wsService.subscribeToUpdatedHero(this.onHeroUpdated);
     this.wsService.subscribeToNeedResetCard(() =>
       this.storeInstance.setData({ isChooseModalOpen: true })
     );
@@ -65,30 +69,44 @@ class Store {
       const currHeroIndex = this.state.heroes.findIndex(
         ({ id }) => id === hero.id
       );
-      const currHero = this.state.heroes[currHeroIndex];
 
-      const isHeroUpdated = this.isHeroUpdated(currHero, hero);
-
-      if (currHeroIndex !== -1 && isHeroUpdated) {
+      if (currHeroIndex !== -1) {
         this.state.heroes.splice(currHeroIndex, 1, hero);
         this.storeInstance.setData(
-          { ...this.state, heroes: this.storeInstance.state.heroes },
+          {
+            heroes: this.storeInstance.state.heroes,
+          },
           false
         );
         const key = `hero-${hero.id}`;
         this.storeInstance.emitChange(key);
       }
     }
+  };
 
-    this.storeInstance.setData(
-      {
-        ...this.state,
-        players: battlefield.players,
-      },
-      false
-    );
-    this.storeInstance.emitChange("players");
-    this.storeInstance.emitChange("player");
+  public onPlayersUpdated = (players: Player[]) => {
+    const normalizedPlayers = players.map((player) => ({
+      ...this.state.players.find(({ id }) => id === player.id),
+      ...player,
+    }));
+
+    const changed = !isEqual(normalizedPlayers, this.state.players);
+
+    if (changed) {
+      this.storeInstance.setData({ players: normalizedPlayers });
+    }
+  };
+
+  public onHeroUpdated = (hero: Hero) => {
+    console.log(hero);
+    const heroIndex = this.state.heroes.findIndex(({ id }) => id === hero.id);
+    const newHeroes = [...this.state.heroes];
+    newHeroes[heroIndex] = hero;
+
+    this.storeInstance.setData({ heroes: newHeroes }, false);
+
+    const key = `hero-${hero.id}`;
+    this.storeInstance.emitChange(key);
   };
 
   public useHeroActions = async (
@@ -126,26 +144,6 @@ class Store {
       this.storeInstance.emitChange("heroes");
     }
   };
-
-  public isHeroUpdated(hero: Hero, newHero: Hero) {
-    if (!(hero && newHero)) {
-      return;
-    }
-
-    const { actions, ...restHeroOpt } = hero;
-    const { actions: newHeroActions, ...restNewHeroOpt } = newHero;
-
-    const sortedActions = actions.sort((a, b) => a.id - b.id);
-    const sortedNewHeroActions = newHeroActions.sort((a, b) => a.id - b.id);
-
-    if (
-      isEqual(restHeroOpt, restNewHeroOpt) &&
-      isEqual(sortedActions, sortedNewHeroActions)
-    ) {
-      return false;
-    }
-    return true;
-  }
 }
 
 const initialData: StoreState = {
@@ -160,4 +158,4 @@ const initialData: StoreState = {
 const storeInstance = new StoreInstance(initialData);
 const wsService = new WsService();
 
-export default new Store(storeInstance, wsService);
+export const store = new BaseStore(storeInstance, wsService);

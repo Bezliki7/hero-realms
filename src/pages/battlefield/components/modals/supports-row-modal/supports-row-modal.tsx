@@ -2,12 +2,12 @@ import { Modal } from "@/components/ui/modal";
 import { HERO_PLACEMENT } from "@/api/requests/hero-realms/hero/hero.constant";
 import { useToast } from "@/hooks/use-toast";
 import apiClient from "@/api/api-client";
-import Card from "@/components/hero-card/card";
 import { useStore } from "@/pages/battlefield/hooks/use-store";
 
 import type { Hero } from "@/api/requests/hero-realms/hero/hero.interface";
 
 import styles from "./supports-row-modal.module.css";
+import CardWrapper from "../../card-wrapper/card-wrapper";
 
 type SupportsRowModalProps = {
   heroes: Hero[];
@@ -43,7 +43,7 @@ const SupportsRowModal = ({ heroes }: SupportsRowModalProps) => {
       <div className={styles.modalContainer}>
         <div className={styles.cards}>
           {supportHeroes.map((hero) => (
-            <Card
+            <CardWrapper
               key={hero.id}
               hero={hero}
               onClick={() => {
