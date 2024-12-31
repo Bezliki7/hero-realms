@@ -16,7 +16,7 @@ import type { PlayerInfo } from "./pages/settings/settings.interface";
 import type { Battlefield } from "./api/requests/hero-realms/battlefield/battlefield.interface";
 import type { Player } from "./api/requests/hero-realms/player/player.interface";
 
-const App = () => {
+export const App = () => {
   const [battlefield, setBattlefield] = useState<Battlefield>(
     DEFAULT_BATTLEFIELD_VALUES
   );
@@ -63,5 +63,3 @@ const App = () => {
     </Providers>
   );
 };
-
-export default App;
