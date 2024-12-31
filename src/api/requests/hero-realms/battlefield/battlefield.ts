@@ -2,7 +2,12 @@ import { AxiosRequestConfig } from "axios";
 
 import { api } from "@/api/instance";
 import { URLS } from "../../requests.constant";
-import { Battlefield, CreateBattlefieldDto } from "./battlefield.interface";
+
+import type {
+  Battlefield,
+  CreateBattlefieldDto,
+  UpdateBattlefieldDto,
+} from "./battlefield.interface";
 
 class BattlefieldService {
   public createBattlefield(
@@ -14,6 +19,19 @@ class BattlefieldService {
       dto,
       config
     );
+  }
+
+  public updateBattlefield(
+    id: number,
+    dto: UpdateBattlefieldDto,
+    config?: AxiosRequestConfig
+  ) {
+    const normalizedUri = URLS.BATTLEFIELD.GET_BATTLEFIELD.replace(
+      "$1",
+      id.toString()
+    );
+
+    return api.put(normalizedUri, dto, config);
   }
 
   public getBattlefield(id: number, config?: AxiosRequestConfig) {

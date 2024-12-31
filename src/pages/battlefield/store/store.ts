@@ -55,6 +55,7 @@ class BaseStore {
     });
 
     this.wsService.connect(currentPlayerId);
+    this.wsService.prepareBattlefield(battlefield.id);
 
     this.wsService.subscribeToUpdatedBattlefield(this.onBattledieldUpdated);
     this.wsService.subscribeToUpdatedPlayers(this.onPlayersUpdated);

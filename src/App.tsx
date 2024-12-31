@@ -26,21 +26,26 @@ export const App = () => {
   useEffect(() => {
     const fetch = async () => {
       const playerInfo = localStorage.getItem(PLAYER_INFO_KEY);
-      console.log(playerInfo);
-      if (playerInfo) {
-        const { battlefieldId, playerId } = JSON.parse(
-          playerInfo
-        ) as PlayerInfo;
 
-        const battlefield = await apiClient.battlefield.getBattlefield(
-          battlefieldId
-        );
-        const player = await apiClient.player.getPlayer(playerId);
+      try {
+        if (playerInfo) {
+          const { battlefieldId, playerId } = JSON.parse(
+            playerInfo
+          ) as PlayerInfo;
 
-        setBattlefield(battlefield.data);
-        setPlayer(player.data);
+          const player = await apiClient.player.getPlayer(playerId);
+          setPlayer(player.data);
+
+          const battlefield = await apiClient.battlefield.getBattlefield(
+            battlefieldId
+          );
+          setBattlefield(battlefield.data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetch();
@@ -52,7 +57,7 @@ export const App = () => {
 
   return (
     <Providers battlefield={battlefield} player={player}>
-      {!(battlefield && player) ? (
+      {!battlefield || !player ? (
         <Settings />
       ) : (
         <>

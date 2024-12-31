@@ -21,7 +21,7 @@ const Battlefield = () => {
   useEffect(() => {
     store.init(battlefield, player.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [battlefield]);
 
   if (!store.heroes.length) {
     return <Loader />;

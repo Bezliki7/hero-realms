@@ -28,24 +28,36 @@ const Form = ({ battlefields, players }: FormProps) => {
     let battlefield = battlefields.find((b) => b.name === formState.btflName);
     let player = players.find((player) => player.name === formState.name);
 
-    if (!battlefield) {
-      const { data } = await apiClient.battlefield.createBattlefield({
-        name: formState.btflName,
-      });
-      battlefield = data;
-    }
     if (!player) {
       const { data } = await apiClient.player.createPlayer({
-        battlefieldId: battlefield.id,
+        battlefieldId: battlefield?.id,
         name: formState.name,
       });
       player = data;
     }
 
+    if (!battlefield) {
+      const { data } = await apiClient.battlefield.createBattlefield({
+        name: formState.btflName,
+        playerId: player.id,
+      });
+      battlefield = data;
+    }
+
     const battlefieldPlayers = battlefield.players ?? [];
     const isPlayerExistInBatfld = battlefieldPlayers.some(
-      (players) => players.id === players.id
+      ({ id }) => id === player.id
     );
+
+    if (!isPlayerExistInBatfld) {
+      await apiClient.battlefield.updateBattlefield(battlefield.id, {
+        playersIds: [
+          ...battlefieldPlayers.map((player) => player.id),
+          player.id,
+        ],
+      });
+    }
+
     setBattlefield({
       ...battlefield,
       ...(!isPlayerExistInBatfld && {

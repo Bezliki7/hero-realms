@@ -26,11 +26,6 @@ export class WsService {
     this.socket.offAny();
   }
 
-  public init(id: number) {
-    this.connect();
-    this.prepareBattlefield(id);
-  }
-
   public prepareBattlefield(id: number) {
     this.socket.emit(CLIENT_MESSAGES.PREPARE_BATTLEFIELD, {
       id,

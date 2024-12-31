@@ -2,7 +2,7 @@ import type { Hero } from "../hero/hero.interface";
 
 export type CreatePlayerDto = {
   name: string;
-  battlefieldId: number;
+  battlefieldId?: number;
 };
 
 export type UpdatePlayerDto = {
