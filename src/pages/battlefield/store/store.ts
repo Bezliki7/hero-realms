@@ -52,6 +52,7 @@ class BaseStore {
       players: battlefield.players,
       heroes: battlefield.heroes,
       currentPlayerId,
+      isLoading: true,
     });
 
     this.wsService.connect(currentPlayerId);
@@ -63,6 +64,10 @@ class BaseStore {
     this.wsService.subscribeToNeedResetCard(() =>
       this.storeInstance.setData({ isChooseModalOpen: true })
     );
+
+    this.storeInstance.setData({
+      isLoading: false,
+    });
   };
 
   public onBattledieldUpdated = (battlefield: Battlefield) => {
@@ -104,7 +109,7 @@ class BaseStore {
     const newHeroes = [...this.state.heroes];
     newHeroes[heroIndex] = hero;
 
-    this.storeInstance.setData({ heroes: newHeroes }, false);
+    this.storeInstance.setData({ heroes: newHeroes });
 
     const key = `hero-${hero.id}`;
     this.storeInstance.emitChange(key);
@@ -154,6 +159,7 @@ const initialData: StoreState = {
   isChooseModalOpen: false,
   isDefendersModalOpen: false,
   isSupportsModalOpen: false,
+  isLoading: true,
 };
 
 const storeInstance = new StoreInstance(initialData);

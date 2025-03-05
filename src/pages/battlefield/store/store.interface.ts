@@ -10,6 +10,7 @@ export type StoreState = {
   isChooseModalOpen: boolean;
   isDefendersModalOpen: boolean;
   isSupportsModalOpen: boolean;
+  isLoading: boolean;
 };
 
 export type Listeners = Record<string, VoidFunction[]>;

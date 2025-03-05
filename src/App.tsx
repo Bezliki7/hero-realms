@@ -24,7 +24,7 @@ export const App = () => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
+    const loadInfo = async () => {
       const playerInfo = localStorage.getItem(PLAYER_INFO_KEY);
 
       try {
@@ -48,7 +48,7 @@ export const App = () => {
       }
     };
 
-    fetch();
+    loadInfo();
   }, []);
 
   if (isLoading) {

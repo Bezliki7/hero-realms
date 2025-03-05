@@ -32,20 +32,7 @@ const Card = ({
   );
 
   const sortedActions = useMemo(() => {
-    return hero.actions.sort((a, b) => {
-      const isActionConditionWithChoice = a.conditions.some((condition) =>
-        condition.includes(ACTION_CONDITION.CHOICE)
-      );
-      if (isActionConditionWithChoice) {
-        return -1;
-      }
-
-      if (a.conditions.length || b.conditions.length) {
-        return a.conditions.length - b.conditions.length;
-      }
-
-      return a.id - b.id;
-    });
+    return hero.actions.sort((a, b) => a.id - b.id);
   }, [hero.actions]);
 
   const handleUseCard = (event: React.MouseEvent) => {

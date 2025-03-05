@@ -14,7 +14,7 @@ import Modals from "./components/modals/modals";
 const Battlefield = () => {
   const clickedHeroId = useRef(0);
 
-  const store = useStore("heroes");
+  const store = useStore("isLoading");
   const { player } = usePlayer();
   const { battlefield } = useBattlefield();
 
@@ -23,7 +23,7 @@ const Battlefield = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [battlefield]);
 
-  if (!store.heroes.length) {
+  if (store.isLoading || !store.heroes.length) {
     return <Loader />;
   }
 

@@ -54,6 +54,10 @@ const HeroesToChooseModal = ({
   );
 
   const filteredHeroesToChoose = store.heroes.filter((hero) => {
+    if (hero.playerId !== store.currentPlayerId) {
+      return false;
+    }
+
     if (clickedHeroId === hero.id) {
       return false;
     }

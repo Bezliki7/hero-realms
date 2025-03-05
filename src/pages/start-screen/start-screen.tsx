@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import { cn } from "@/lib/utils";
+
 import { Link } from "react-router-dom";
 import styles from "./start-screen.module.css";
-import { cn } from "@/lib/utils";
 
 const StartScreen = () => {
   return (
